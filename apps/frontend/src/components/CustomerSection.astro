@@ -1,0 +1,161 @@
+---
+---
+
+<section class="split-section customer">
+  <div class="container">
+    <div class="split-wrapper reverse">
+      <div class="visual-content gsap-reveal">
+        <div class="portrait-box">
+          <div class="circle-image">
+            <svg
+              width="240"
+              height="240"
+              viewBox="0 0 240 240"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="120" cy="120" r="100" fill="#1E293B"></circle>
+              <path
+                d="M120 160C140 160 160 150 160 130C160 110 140 100 120 100C100 100 80 110 80 130C80 150 100 160 120 160Z"
+                fill="#3B82F6"
+                opacity="0.5"></path>
+              <circle cx="120" cy="80" r="30" fill="#3B82F6" opacity="0.5"
+              ></circle>
+            </svg>
+          </div>
+          <div class="customer-sales-card">
+            <div class="label">Net Profit</div>
+            <div class="value">$8.2M</div>
+            <div class="bar-mini">
+              <div class="fill" style="width: 75%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="text-content gsap-reveal">
+        <h2 class="section-title">Maximizing ROI <br /> for Investors</h2>
+        <p class="section-desc">
+          We focus on sustainable growth and long-term value creation through
+          rigorous management and strategic improvements.
+        </p>
+        <ul class="bullet-list">
+          <li><span class="check">✓</span> Stable Cashflow</li>
+          <li><span class="check">✓</span> Asset Appreciation</li>
+          <li><span class="check">✓</span> Operational Efficiency</li>
+          <li><span class="check">✓</span> Strategic Exits</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .split-section {
+    padding: 100px 0;
+  }
+  .split-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+  }
+  .split-wrapper.reverse {
+    grid-template-columns: 1.2fr 1fr;
+  }
+
+  .section-title {
+    font-size: 3.5rem;
+    margin-bottom: 2rem;
+    color: var(--text-primary);
+  }
+  .section-desc {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    margin-bottom: 3rem;
+    line-height: 1.6;
+  }
+  .bullet-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  .bullet-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 600;
+    font-size: 1.05rem;
+  }
+  .check {
+    color: #facc15;
+  }
+
+  .visual-content {
+    position: relative;
+    background: var(--bg-surface);
+    border: 1px solid var(--card-border);
+    border-radius: 40px;
+    padding: 5rem;
+    display: flex;
+    justify-content: center;
+  }
+  .portrait-box {
+    position: relative;
+  }
+  .circle-image {
+    border: 8px solid var(--border-subtle);
+    border-radius: 50%;
+    padding: 10px;
+  }
+
+  .customer-sales-card {
+    position: absolute;
+    top: 20%;
+    right: -60px;
+    background: var(--bg-card);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    width: 220px;
+    box-shadow: var(--shadow-card);
+  }
+  .customer-sales-card .label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+  }
+  .customer-sales-card .value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+  }
+  .bar-mini {
+    height: 6px;
+    background: var(--border-medium);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .fill {
+    height: 100%;
+    background: #3b82f6;
+  }
+
+  @media (max-width: 991px) {
+    .split-wrapper.reverse {
+      grid-template-columns: 1fr;
+    }
+    .customer-sales-card {
+      position: static;
+      width: 100%;
+      margin-top: 2rem;
+    }
+    .split-wrapper.reverse .visual-content {
+      order: 2;
+    }
+    .split-wrapper.reverse .text-content {
+      order: 1;
+    }
+  }
+</style>

@@ -1,0 +1,39 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Navbar from "../components/Navbar.astro";
+import Hero from "../components/Hero.astro";
+import Stats from "../components/Stats.astro";
+import FeatureGrid from "../components/FeatureGrid.astro";
+import VisitorsSection from "../components/VisitorsSection.astro";
+import CustomerSection from "../components/CustomerSection.astro";
+import FeatureGridDetailed from "../components/FeatureGridDetailed.astro";
+import ToolsGrid from "../components/ToolsGrid.astro";
+import Testimonials from "../components/Testimonials.astro";
+import FinalCTA from "../components/FinalCTA.astro";
+import Footer from "../components/Footer.astro";
+import SearchModalWrapper from "../components/SearchModalWrapper.tsx";
+---
+
+<BaseLayout>
+	<Navbar />
+	<main>
+		<Hero />
+		<Stats />
+
+		<FeatureGrid />
+		<VisitorsSection />
+		<CustomerSection />
+		<FeatureGridDetailed />
+		<ToolsGrid />
+		<Testimonials />
+		<FinalCTA />
+	</main>
+	<Footer />
+	
+	<!-- Search Results Modal -->
+	<SearchModalWrapper client:only="react" />
+</BaseLayout>
+
+<script>
+  // Search logic is handled in SearchTool.astro
+</script>

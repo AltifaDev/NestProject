@@ -1,0 +1,118 @@
+---
+const features = [
+  {
+    title: "Local Expertise",
+    desc: "Deep understanding of Thai markets, regulations, and business culture.",
+  },
+  {
+    title: "Proven Track Record",
+    desc: "Consistent success in establishing and growing businesses across Thailand.",
+  },
+  {
+    title: "Comprehensive Solutions",
+    desc: "End-to-end services covering every aspect of business operations.",
+  },
+  {
+    title: "Time Efficiency",
+    desc: "Streamlined processes to get your business operating quickly.",
+  },
+  {
+    title: "Growth Focused",
+    desc: "Strategic approaches to maximize your business potential and ROI.",
+  },
+  {
+    title: "Risk Mitigation",
+    desc: "Thorough due diligence and compliance expertise to protect your investments.",
+  },
+];
+---
+
+<section class="detailed-features">
+  <div class="container">
+    <div class="section-header text-center gsap-reveal">
+      <h2 class="section-title">Why Choose Us</h2>
+    </div>
+
+    <div class="features-detailed-grid">
+      {
+        features.map((f, i) => (
+          <div
+            class="feature-detail-card gsap-reveal"
+            style={`transition-delay: ${i * 0.05}s;`}
+          >
+            <div class="icon-orb">✳️</div>
+            <h3>{f.title}</h3>
+            <p>{f.desc}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .detailed-features {
+    padding: 100px 0;
+  }
+  .text-center {
+    text-align: center;
+  }
+  .section-title {
+    font-size: 3.5rem;
+    margin-bottom: 5rem;
+  }
+
+  .features-detailed-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .feature-detail-card {
+    background: var(--bg-card);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    padding: 3rem 2.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .feature-detail-card:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-5px);
+    background: var(--bg-surface);
+  }
+
+  .icon-orb {
+    width: 60px;
+    height: 60px;
+    background: var(--card-bg-alpha);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .feature-detail-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1.25rem;
+    color: var(--text-primary);
+  }
+  .feature-detail-card p {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 991px) {
+    .features-detailed-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 576px) {
+    .features-detailed-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,173 @@
+---
+const plans = [
+  {
+    name: 'Starter',
+    price: '$0',
+    description: 'Gain invaluable predictive analytics actionable insights empowering.',
+    features: ['3 Projects', 'Basic Analytics', 'Community Support', '1gb Storage'],
+    highlight: false,
+    cta: 'Start for Free'
+  },
+  {
+    name: 'Pro',
+    price: '$49',
+    description: 'Priority support and advanced features for growing teams.',
+    features: ['Unlimited Projects', 'Advanced Analytics', 'Priority Support', '10gb Storage'],
+    highlight: true,
+    cta: 'Get Started Now'
+  },
+  {
+    name: 'Enterprise',
+    price: 'Custom',
+    description: 'Custom solutions for large scale organizations and enterprises.',
+    features: ['Custom Integration', 'Dedicated Account', 'SLA Guarantee', 'Unlimited Storage'],
+    highlight: false,
+    cta: 'Contact Sales'
+  }
+];
+---
+<section id="pricing" class="pricing">
+  <div class="container">
+    <div class="section-header text-center gsap-reveal">
+      <h2 class="section-title">Transparent & <span class="text-gradient">Flexible Pricing</span></h2>
+      <p class="section-subtitle">Choose the plan that's right for your business growth.</p>
+      
+      <div class="toggle-container">
+        <span class="active">Monthly</span>
+        <div class="toggle-outer">
+          <div class="toggle-inner"></div>
+        </div>
+        <span class="muted">Yearly (Save 20%)</span>
+      </div>
+    </div>
+
+    <div class="pricing-grid">
+      {plans.map((plan, index) => (
+        <div class={`pricing-card ${plan.highlight ? 'highlight' : ''} gsap-reveal`} style={`transition-delay: ${index * 0.1}s;`}>
+          {plan.highlight && <div class="badge-popular">Most Popular</div>}
+          <div class="card-top">
+            <h3 class="plan-name">{plan.name}</h3>
+            <p class="plan-desc">{plan.description}</p>
+            <div class="plan-price">
+              <span class="price-val">{plan.price}</span>
+              {plan.price !== 'Custom' && <span class="price-period">/mo</span>}
+            </div>
+          </div>
+          
+          <ul class="plan-features">
+            {plan.features.map(feature => (
+              <li>
+                <span class="check-icon">✓</span>
+                {feature}
+              </li>
+            ))}
+          </ul>
+          
+          <div class="card-bottom">
+            <a href="#" class={`btn ${plan.highlight ? 'btn-primary' : 'btn-outline'} btn-full`}>
+              {plan.cta}
+              <span class="btn-icon">→</span>
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .pricing {
+    padding: 100px 0;
+  }
+
+  .text-center { text-align: center; }
+
+  .section-title { font-size: 3.5rem; margin-bottom: 1.5rem; color: var(--text-primary); }
+  .section-subtitle { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 4rem; }
+
+  .toggle-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    font-weight: 600;
+  }
+
+  .toggle-outer {
+    width: 60px;
+    height: 32px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border-medium);
+    border-radius: 9999px;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .toggle-inner {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 22px;
+    height: 22px;
+    background: var(--text-main);
+    border-radius: 50%;
+  }
+
+  .muted { color: var(--text-dim); }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 80px;
+  }
+
+  .pricing-card {
+    background: var(--bg-card);
+    border: 1px solid var(--card-border);
+    border-radius: 40px;
+    padding: 4rem 3rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .pricing-card.highlight {
+    background: var(--bg-surface);
+    border-color: var(--border-medium);
+    transform: scale(1.05);
+    z-index: 10;
+    box-shadow: var(--shadow-card);
+  }
+
+  .badge-popular {
+    position: absolute;
+    top: 30px;
+    right: 40px;
+    background: #3B82F6;
+    color: white;
+    padding: 6px 16px;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  .plan-name { font-size: 1.5rem; margin-bottom: 1.5rem; color: var(--text-primary); }
+  .plan-desc { color: var(--text-secondary); font-size: 1rem; margin-bottom: 3rem; line-height: 1.5; }
+
+  .plan-price { margin-bottom: 3rem; }
+  .price-val { font-size: 4rem; font-weight: 700; color: var(--text-primary); }
+  .price-period { color: var(--text-secondary); font-size: 1.1rem; }
+
+  .plan-features { list-style: none; margin-bottom: 4rem; flex-grow: 1; }
+  .plan-features li { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem; color: var(--text-primary); }
+  .check-icon { color: #FACC15; font-weight: 700; }
+
+  .btn-full { width: 100%; justify-content: space-between; padding: 1.25rem 2rem; }
+
+  @media (max-width: 991px) {
+    .pricing-grid { grid-template-columns: 1fr; max-width: 450px; margin-left: auto; margin-right: auto; }
+    .pricing-card.highlight { transform: scale(1); }
+  }
+</style>

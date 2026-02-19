@@ -1,0 +1,163 @@
+---
+const stats = [
+  { label: "Total Assets", value: "$10M+", icon: "⚡" },
+  { label: "Managed Businesses", value: "50+", icon: "🏢" },
+  { label: "Happy Investors", value: "200+", icon: "👤" },
+  { label: "Yearly Growth", value: "15%", icon: "📊" },
+];
+---
+
+<section class="stats">
+  <div class="container">
+    <div class="stats-grid">
+      {
+        stats.map((stat, index) => (
+          <div
+            class="stat-card gsap-reveal"
+            style={`transition-delay: ${index * 0.1}s;`}
+          >
+            <div class="stat-icon-box">{stat.icon}</div>
+            <div class="stat-info">
+              <span class="stat-label">{stat.label}</span>
+              <h3 class="stat-value">{stat.value}</h3>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="social-proof gsap-reveal">
+      <p>Trusted by 15,000+ founders & business owners</p>
+      <div class="logos-row">
+        <div class="logo-track">
+          <div class="logo-item">Hospitality</div>
+          <div class="logo-item secundary">Real Estate</div>
+          <div class="logo-item">Retail</div>
+          <div class="logo-item secundary">Investment</div>
+          <div class="logo-item">Development</div>
+          <div class="logo-item secundary">Management</div>
+          <!-- Repeating for seamless loop -->
+          <div class="logo-item">Hospitality</div>
+          <div class="logo-item secundary">Real Estate</div>
+          <div class="logo-item">Retail</div>
+          <div class="logo-item secundary">Investment</div>
+          <div class="logo-item">Development</div>
+          <div class="logo-item secundary">Management</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .stats {
+    padding: 60px 0 100px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 120px;
+  }
+
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--card-border);
+    padding: 2.5rem 2rem;
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .stat-card:hover {
+    border-color: var(--border-medium);
+    transform: translateY(-5px);
+    background: var(--bg-surface);
+  }
+
+  .stat-icon-box {
+    width: 48px;
+    height: 48px;
+    background: var(--card-bg-alpha);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+  }
+
+  .stat-label {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-value {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .social-proof {
+    text-align: center;
+  }
+
+  .social-proof p {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 3rem;
+  }
+
+  .logos-row {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 6rem;
+    opacity: 0.5;
+    filter: grayscale(1);
+    overflow: hidden;
+    white-space: nowrap;
+    width: 100%;
+    position: relative;
+    padding: 20px 0;
+  }
+
+  .logo-track {
+    display: flex;
+    gap: 6rem;
+    animation: marquee 30s linear infinite;
+    min-width: 100%;
+  }
+
+  .logo-item {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    flex-shrink: 0;
+  }
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (max-width: 991px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 576px) {
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

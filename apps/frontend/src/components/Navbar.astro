@@ -1,0 +1,142 @@
+---
+import Logo from "./Logo.astro";
+import ThemeToggle from "./ThemeToggle.astro";
+---
+
+<nav class="navbar">
+  <div class="container nav-container">
+    <div class="nav-left">
+      <Logo />
+    </div>
+
+    <div class="nav-center">
+      <a href="#services" class="nav-link">Services</a>
+      <a href="#portfolio" class="nav-link">Portfolio</a>
+      <a href="#contact" class="nav-link">Contact</a>
+    </div>
+
+    <div class="nav-right">
+      <ThemeToggle />
+      <a href="/login" class="btn btn-outline nav-btn">Sign In</a>
+      <a href="#contact" class="btn btn-primary nav-btn">Get Consultation</a>
+      <!-- Agent access: subtle key icon, only visible on hover of nav-right area -->
+      <a href="/agent/login" class="agent-access-link" title="Agent Portal" aria-label="Agent Portal">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+      </a>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-toggle" aria-label="Toggle Menu">
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+</nav>
+
+<style>
+  .navbar {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 1200px;
+    height: 70px;
+    background: var(--nav-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--nav-border);
+    border-radius: 999px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0 30px;
+  }
+
+  .nav-center {
+    display: flex;
+    gap: 2.5rem;
+    align-items: center;
+  }
+
+  .nav-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    padding: 20px 0;
+  }
+
+  .nav-link:hover {
+    color: var(--text-primary);
+  }
+
+  .chevron-down {
+    font-size: 0.6rem;
+    vertical-align: middle;
+    margin-left: 2px;
+  }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .nav-btn {
+    border-radius: 999px;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  /* Agent access: hidden key icon */
+  .agent-access-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    color: var(--text-secondary);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease, background 0.2s ease, color 0.2s ease;
+    text-decoration: none;
+    margin-left: -0.5rem;
+  }
+
+  .nav-right:hover .agent-access-link {
+    opacity: 0.35;
+    pointer-events: auto;
+  }
+
+  .agent-access-link:hover {
+    opacity: 1 !important;
+    background: var(--bg-glass);
+    color: var(--text-primary);
+  }
+
+  /* Mobile */
+  .mobile-menu-toggle {
+    display: none;
+  }
+
+  @media (max-width: 991px) {
+    .nav-center,
+    .nav-right {
+      display: none;
+    }
+    .mobile-menu-toggle {
+      display: block;
+    }
+  }
+</style>

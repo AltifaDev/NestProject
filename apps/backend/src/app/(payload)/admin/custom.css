@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Prompt:wght@300;400;500;600&display=swap');
+
+:root {
+  /* Typography */
+  --font-body: 'Inter', 'Prompt', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-header: 'Inter', 'Prompt', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Border Radius - Modern & Rounded */
+  --style-radius-s: 6px;
+  --style-radius-m: 10px;
+  --style-radius-l: 14px;
+  
+  /* Input fields specific */
+  --style-input-border-radius: 8px;
+}
+
+/* Specific UI Enhancements */
+
+/* Main sidebar */
+.nav {
+  font-family: var(--font-body);
+}
+
+/* Buttons */
+.btn {
+  border-radius: var(--style-radius-m) !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em;
+  text-transform: none !important;
+}
+
+/* Cards & Containers */
+.card, .gutter {
+  border-radius: var(--style-radius-l);
+}
+
+/* Inputs */
+input, select, textarea, .react-select__control {
+  border-radius: var(--style-input-border-radius) !important;
+  font-family: var(--font-body) !important;
+}
+
+/* Breadcrumbs */
+.step-nav {
+  font-family: var(--font-body);
+  font-weight: 500;
+}
+
+/* Table Headers */
+th {
+  font-weight: 600 !important;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-size: 0.75rem !important;
+}
+
+/* Sidebar Collapsible */
+.nav-group__label {
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--theme-elevation-400);
+}

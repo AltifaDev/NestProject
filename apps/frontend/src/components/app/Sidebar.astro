@@ -1,0 +1,206 @@
+---
+import {
+    LayoutDashboard,
+    PieChart,
+    Briefcase,
+    FileText,
+    Settings,
+    LogOut,
+} from "lucide-astro";
+
+const currentPath = Astro.url.pathname;
+
+const navItems = [
+    { name: "Dashboard", href: "/app/dashboard", icon: LayoutDashboard },
+    { name: "Portfolio", href: "/app/portfolio", icon: PieChart },
+    { name: "Funds", href: "/app/funds", icon: Briefcase },
+    { name: "Documents", href: "/app/documents", icon: FileText },
+    { name: "Settings", href: "/app/settings", icon: Settings },
+];
+---
+
+<aside class="sidebar">
+    <div class="logo-container">
+        <div class="logo-icon">N</div>
+        <span class="logo-text">Nest of Assets</span>
+    </div>
+
+    <nav class="nav-menu">
+        {
+            navItems.map((item) => {
+                const isActive = currentPath.startsWith(item.href);
+                return (
+                    <a
+                        href={item.href}
+                        class:list={["nav-item", { active: isActive }]}
+                    >
+                        <item.icon class="nav-icon" />
+                        <span>{item.name}</span>
+                        {isActive && <div class="active-indicator" />}
+                    </a>
+                );
+            })
+        }
+    </nav>
+
+    <div class="user-profile">
+        <div class="avatar">JM</div>
+        <div class="user-info">
+            <p class="name">John Mayer</p>
+            <p class="role">Accredited Investor</p>
+        </div>
+        <button class="logout-btn" aria-label="Logout">
+            <LogOut size={18} />
+        </button>
+    </div>
+</aside>
+
+<style>
+    .sidebar {
+        width: 280px;
+        height: 100vh;
+        background: var(--bg-surface);
+        border-right: 1px solid var(--card-border);
+        display: flex;
+        flex-direction: column;
+        padding: 1.5rem;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 50;
+    }
+
+    .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 3rem;
+        padding-left: 0.5rem;
+    }
+
+    .logo-icon {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(
+            135deg,
+            var(--accent-blue),
+            var(--accent-purple)
+        );
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: white;
+        font-size: 1.2rem;
+    }
+
+    .logo-text {
+        font-size: 1.1rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: var(--text-primary);
+    }
+
+    .nav-menu {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        flex: 1;
+    }
+
+    .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        border-radius: 12px;
+        color: var(--text-secondary);
+        transition: all 0.2s ease;
+        position: relative;
+        font-weight: 500;
+    }
+
+    .nav-item:hover {
+        color: var(--text-primary);
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    .nav-item.active {
+        color: var(--text-primary);
+        background: rgba(59, 130, 246, 0.1);
+    }
+
+    .nav-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .active-indicator {
+        position: absolute;
+        right: 1rem;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--accent-blue);
+        box-shadow: 0 0 10px var(--accent-blue);
+    }
+
+    .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--card-border);
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #334155, #1e293b);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        color: var(--text-primary);
+        border: 1px solid var(--card-border);
+    }
+
+    .user-info {
+        flex: 1;
+        overflow: hidden;
+    }
+
+    .name {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .role {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+    }
+
+    .logout-btn {
+        background: transparent;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 8px;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .logout-btn:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-primary);
+    }
+</style>

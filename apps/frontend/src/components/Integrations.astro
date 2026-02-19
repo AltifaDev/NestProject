@@ -1,0 +1,122 @@
+---
+---
+
+<section id="investment" class="cta-section">
+  <div class="container">
+    <div class="cta-banner gsap-reveal">
+      <div class="cta-glow"></div>
+      <h2 class="cta-title">Unlock High-Yield <br /> Opportunities</h2>
+      <p class="cta-desc">
+        Partner with Nest of Assets to access exclusive private equity deals and
+        scale your wealth portfolio.
+      </p>
+
+      <div class="cta-actions">
+        <a href="#" class="btn btn-primary btn-cta">View Opportunities</a>
+        <a href="#" class="btn btn-outline btn-cta">Contact for Access</a>
+      </div>
+
+      <div class="cta-footer-text">
+        <span>Verified Listings</span>
+        <span class="dot">•</span>
+        <span>Due Diligence Included</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-section {
+    padding: 100px 0;
+  }
+
+  .cta-banner {
+    background: var(--bg-surface);
+    border: 1px solid var(--card-border);
+    border-radius: 48px;
+    padding: 6rem 4rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 40px 100px var(--shadow-color);
+  }
+
+  .cta-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
+    background: radial-gradient(
+      circle,
+      rgba(59, 130, 246, 0.15) 0%,
+      transparent 70%
+    );
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .cta-title {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+    color: var(--text-primary);
+  }
+
+  .cta-desc {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto 3rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .btn-cta {
+    padding: 1.1rem 2.5rem;
+    font-size: 1.1rem;
+    border-radius: 9999px;
+  }
+
+  .cta-footer-text {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .dot {
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 768px) {
+    .cta-title {
+      font-size: 2.5rem;
+    }
+    .cta-actions {
+      flex-direction: column;
+      align-items: stretch;
+      max-width: 300px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .cta-banner {
+      padding: 4rem 2rem;
+    }
+  }
+</style>

@@ -1,0 +1,237 @@
+---
+---
+
+<section id="services" class="features-split">
+  <div class="container">
+    <div class="split-content">
+      <div class="text-side gsap-reveal">
+        <h2 class="title">Comprehensive <br /> Business Solutions</h2>
+        <p class="desc">
+          We offer comprehensive business solutions tailored to your specific
+          needs, leveraging our expertise and local knowledge to ensure your
+          success in Thailand.
+        </p>
+
+        <div class="bullets">
+          <div class="bullet">
+            <span class="check">✓</span>
+            <span>Private Equity & Investments</span>
+          </div>
+          <div class="bullet">
+            <span class="check">✓</span>
+            <span>Hospitality & Bar Setup</span>
+          </div>
+          <div class="bullet">
+            <span class="check">✓</span>
+            <span>Massage Business Operations</span>
+          </div>
+          <div class="bullet">
+            <span class="check">✓</span>
+            <span>Real Estate & Acquisitions</span>
+          </div>
+        </div>
+
+        <a href="#" class="btn btn-primary btn-large">
+          Get Started Now
+          <span class="chevron">→</span>
+        </a>
+      </div>
+
+      <div class="visual-side gsap-reveal">
+        <div class="chart-container">
+          <div class="chart-header">
+            <h4>Sales Overtime</h4>
+          </div>
+          <div class="chart-bars">
+            <div class="bar" style="height: 40%"></div>
+            <div class="bar" style="height: 60%"></div>
+            <div class="bar" style="height: 50%"></div>
+            <div class="bar active" style="height: 90%">
+              <div class="tooltip">412 Sales</div>
+            </div>
+            <div class="bar" style="height: 55%"></div>
+            <div class="bar" style="height: 70%"></div>
+            <div class="bar" style="height: 45%"></div>
+          </div>
+          <div class="chart-labels">
+            <span>Jan1</span><span>Jan2</span><span>Jan3</span><span>Jan4</span
+            ><span>Jan5</span><span>Jan6</span><span>Jan7</span>
+          </div>
+        </div>
+
+        <div class="mini-card-floating">
+          <div class="label">Monthly Sales</div>
+          <div class="values">
+            <div>
+              <span class="small">Total product</span>
+              <strong>25.4k</strong>
+            </div>
+            <div>
+              <span class="small">Revenue</span>
+              <strong>$6,35,240</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .features-split {
+    padding: 120px 0;
+    position: relative;
+  }
+
+  .split-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+  }
+
+  .title {
+    font-size: 4rem;
+    margin-bottom: 2rem;
+    line-height: 1.1;
+  }
+
+  .desc {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 3rem;
+    line-height: 1.6;
+  }
+
+  .bullets {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+  }
+
+  .bullet {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .check {
+    color: #facc15;
+    font-size: 1.2rem;
+  }
+
+  .btn-large {
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+  }
+
+  .visual-side {
+    position: relative;
+    background: var(--bg-surface);
+    border-radius: 40px;
+    padding: 4rem;
+    border: 1px solid var(--card-border);
+  }
+
+  .chart-container {
+    background: var(--bg-surface);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 2rem;
+    width: 100%;
+  }
+
+  .chart-header h4 {
+    margin-bottom: 2.5rem;
+    font-size: 1.2rem;
+  }
+
+  .chart-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 1.5rem;
+    height: 200px;
+    margin-bottom: 1.5rem;
+  }
+
+  .bar {
+    flex: 1;
+    background: var(--border-subtle);
+    border-radius: 4px;
+    position: relative;
+  }
+
+  .bar.active {
+    background: linear-gradient(180deg, #facc15 0%, #e11d48 100%);
+  }
+
+  .tooltip {
+    position: absolute;
+    top: -45px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-card);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    border: 1px solid var(--card-border);
+  }
+
+  .chart-labels {
+    display: flex;
+    justify-content: space-between;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+  }
+
+  .mini-card-floating {
+    position: absolute;
+    bottom: -20px;
+    right: -40px;
+    background: var(--bg-card);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 2rem;
+    width: 280px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .mini-card-floating .label {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-secondary);
+  }
+  .values {
+    display: flex;
+    gap: 2rem;
+  }
+  .values strong {
+    display: block;
+    font-size: 1.4rem;
+    color: var(--text-primary);
+    margin-top: 0.5rem;
+  }
+  .small {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 991px) {
+    .split-content {
+      grid-template-columns: 1fr;
+      gap: 4rem;
+    }
+    .visual-side {
+      padding: 2rem;
+    }
+    .mini-card-floating {
+      position: static;
+      width: 100%;
+      margin-top: 2rem;
+    }
+  }
+</style>

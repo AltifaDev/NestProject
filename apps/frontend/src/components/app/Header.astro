@@ -1,0 +1,205 @@
+---
+import { Bell, Search } from "lucide-astro";
+import ThemeToggle from "../ThemeToggle.astro";
+
+interface Props {
+    title?: string;
+    breadcrumbs?: { label: string; href?: string }[];
+}
+
+const { title = "Dashboard", breadcrumbs = [] } = Astro.props;
+---
+
+<header class="app-header">
+    <div class="header-left">
+        <div class="breadcrumbs">
+            <span class="breadcrumb-item">App</span>
+            {
+                breadcrumbs.map((crumb) => (
+                    <span
+                        class:list={[
+                            "breadcrumb-item",
+                            { active: !crumb.href },
+                        ]}
+                    >
+                        {crumb.href ? (
+                            <a href={crumb.href}>{crumb.label}</a>
+                        ) : (
+                            crumb.label
+                        )}
+                    </span>
+                ))
+            }
+            {
+                breadcrumbs.length === 0 && (
+                    <span class="breadcrumb-item active">{title}</span>
+                )
+            }
+        </div>
+        <h1 class="page-title">{title}</h1>
+    </div>
+
+    <div class="header-right">
+        <div class="search-bar">
+            <Search class="search-icon" size={18} />
+            <input type="text" placeholder="Search assets, funds..." />
+            <div class="cmd-k">⌘K</div>
+        </div>
+
+        <div class="actions">
+            <button class="icon-btn notification-btn">
+                <Bell size={20} />
+                <span class="badge"></span>
+            </button>
+            <ThemeToggle />
+        </div>
+    </div>
+</header>
+
+<style>
+    .app-header {
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 2rem;
+        border-bottom: 1px solid var(--card-border);
+        background: var(--bg-color);
+        position: sticky;
+        top: 0;
+        z-index: 40;
+    }
+
+    .header-left {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .breadcrumbs {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+    }
+
+    .breadcrumb-item {
+        display: flex;
+        align-items: center;
+    }
+
+    .breadcrumb-item:not(:first-child)::before {
+        content: "/";
+        padding: 0 0.5rem;
+        color: var(--card-border);
+    }
+
+    .breadcrumb-item a {
+        color: var(--text-secondary);
+        transition: color 0.2s;
+    }
+
+    .breadcrumb-item a:hover {
+        color: var(--text-primary);
+    }
+
+    .breadcrumb-item.active {
+        color: var(--text-primary);
+        font-weight: 500;
+    }
+
+    .page-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .search-bar {
+        position: relative;
+        width: 320px;
+    }
+
+    .search-bar input {
+        width: 100%;
+        background: var(--card-bg-alpha);
+        border: 1px solid var(--card-border);
+        border-radius: 8px;
+        padding: 0.6rem 2.5rem 0.6rem 2.5rem;
+        color: var(--text-primary);
+        font-family: inherit;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+    }
+
+    .search-bar input:focus {
+        outline: none;
+        border-color: var(--accent-blue);
+        background: rgba(59, 130, 246, 0.05);
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-secondary);
+        pointer-events: none;
+    }
+
+    .cmd-k {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        background: rgba(255, 255, 255, 0.05);
+        padding: 2px 6px;
+        border-radius: 4px;
+        border: 1px solid var(--card-border);
+        pointer-events: none;
+    }
+
+    .actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .icon-btn {
+        background: transparent;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 50%;
+        transition: all 0.2s;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .icon-btn:hover {
+        background: var(--glass-bg);
+        color: var(--text-primary);
+    }
+
+    .badge {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 8px;
+        height: 8px;
+        background: var(--accent-pink);
+        border-radius: 50%;
+        border: 2px solid var(--bg-color);
+    }
+</style>

@@ -1,0 +1,139 @@
+---
+import '../styles/global.css';
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const { 
+  title = "NEST OF ASSETS - Earn revenue by selling anything", 
+  description = "A premium Astro + GSAP clone of NEST OF ASSETS."
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		
+		<!-- Google Fonts: IBM Plex Sans Thai -->
+		<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+		
+		<!-- Mapbox & Leaflet CSS -->
+		<link href="https://api.mapbox.com/mapbox-gl-js/v3.1.2/mapbox-gl.css" rel="stylesheet">
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+
+		<script is:inline>
+			// Theme Initialization
+			const theme = (() => {
+				if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+					return localStorage.getItem('theme');
+				}
+				if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+					return 'dark';
+				}
+				return 'light';
+			})();
+		
+			if (theme === 'light') {
+				document.documentElement.setAttribute('data-theme', 'light');
+			} else {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+			window.localStorage.setItem('theme', theme);
+		</script>
+	</head>
+	<body>
+		<slot />
+		
+		<script>
+			import { gsap } from 'gsap';
+			import { ScrollTrigger } from 'gsap/ScrollTrigger';
+			import Lenis from 'lenis';
+
+			// Register GSAP plugins
+			gsap.registerPlugin(ScrollTrigger);
+
+			// Setup Lenis
+			const lenis = new Lenis({
+				duration: 1.2,
+				easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+				smoothWheel: true,
+			});
+
+			lenis.on('scroll', ScrollTrigger.update);
+
+			gsap.ticker.add((time) => {
+				lenis.raf(time * 1000);
+			});
+
+			gsap.ticker.lagSmoothing(0);
+
+			// Animation Logic
+			const initAnimations = () => {
+				// Hero Entrance
+				const heroTl = gsap.timeline({
+					defaults: { ease: 'power3.out', duration: 1 }
+				});
+
+				heroTl
+					.from('.hero-badge', { y: 30, opacity: 0 })
+					.from('.hero-title', { y: 40, opacity: 0 }, '-=0.7')
+					.from('.hero-subtitle', { y: 40, opacity: 0 }, '-=0.7')
+					.from('.hero-actions', { y: 40, opacity: 0 }, '-=0.7')
+					.from('.hero-footer-text', { y: 20, opacity: 0 }, '-=0.7')
+					.from('.hero-dashboard-container', { 
+						opacity: 0, 
+						y: 100, 
+						duration: 1.5,
+						ease: 'power4.out' 
+					}, '-=1');
+
+				// Scroll Reveal via batch
+				ScrollTrigger.batch('.gsap-reveal', {
+					onEnter: (batch) => {
+						gsap.to(batch, {
+							opacity: 1,
+							y: 0,
+							stagger: 0.1,
+							duration: 1.2,
+							ease: 'power3.out',
+							overwrite: true
+						});
+					},
+					start: 'top 85%',
+				});
+
+				// Chart Animation
+				const barTriggers = gsap.utils.toArray('.chart-bars');
+				barTriggers.forEach((chart: any) => {
+					gsap.from(chart.querySelectorAll('.bar'), {
+						scrollTrigger: {
+							trigger: chart,
+							start: 'top 80%'
+						},
+						height: 0,
+						stagger: 0.05,
+						duration: 1,
+						ease: 'power2.out'
+					});
+				});
+
+				ScrollTrigger.refresh();
+			};
+
+			// Initialize
+			if (document.readyState === 'complete') {
+				initAnimations();
+			} else {
+				window.addEventListener('load', initAnimations);
+			}
+		</script>
+	</body>
+</html>

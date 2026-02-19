@@ -1,0 +1,88 @@
+---
+import "../styles/global.css";
+import Sidebar from "../components/app/Sidebar.astro";
+import Header from "../components/app/Header.astro";
+
+interface Props {
+    title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="generator" content={Astro.generator} />
+        <title>{title} | Nest of Assets</title>
+    </head>
+    <body>
+        <div class="app-layout">
+            <Sidebar />
+            <div class="main-wrapper">
+                <Header title={title} />
+                <main class="content-area">
+                    <slot />
+                </main>
+            </div>
+        </div>
+        <style>
+            html,
+            body {
+                height: 100%;
+                overflow: hidden; /* Prevent body scroll, use content-area scroll */
+                background: var(--bg-surface);
+            }
+
+            .app-layout {
+                display: flex;
+                height: 100vh;
+                width: 100vw;
+            }
+
+            .main-wrapper {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                margin-left: 280px; /* Sidebar width */
+                height: 100%;
+                overflow: hidden;
+                position: relative;
+                background: rgba(
+                    255,
+                    255,
+                    255,
+                    0.02
+                ); /* Slight tint for content area */
+            }
+
+            .content-area {
+                flex: 1;
+                overflow-y: auto;
+                padding: 2rem;
+                padding-bottom: 4rem;
+            }
+
+            /* Custom Scrollbar for Content Area */
+            .content-area::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .content-area::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            .content-area::-webkit-scrollbar-thumb {
+                background: var(--card-border);
+                border-radius: 3px;
+            }
+
+            .content-area::-webkit-scrollbar-thumb:hover {
+                background: var(--text-secondary);
+            }
+        </style>
+    </body>
+</html>

@@ -1,0 +1,342 @@
+---
+import SearchTool from "./SearchTool.astro";
+---
+
+<section class="hero">
+  <div class="hero-bg-glow">
+    <div class="glow-item red"></div>
+    <div class="glow-item blue"></div>
+  </div>
+
+  <div class="container hero-content">
+    <div class="search-tool-wrapper hero-badge gsap-reveal">
+      <SearchTool />
+    </div>
+
+    <h1 class="hero-title gsap-reveal">Nest of Assets Co, Ltd</h1>
+
+    <p class="hero-subtitle gsap-reveal">
+      Private Equity: Asset Management & Business Development
+    </p>
+
+    <div class="hero-actions gsap-reveal">
+      <a href="#contact" class="btn btn-primary btn-hero">
+        Get Consultation
+        <span class="chevron">→</span>
+      </a>
+      <a href="#portfolio" class="btn btn-outline btn-hero">View Portfolio</a>
+    </div>
+
+    <div class="hero-footer-text gsap-reveal">
+      <span>Private Equity</span>
+      <span class="dot">•</span>
+      <span>Asset Management</span>
+      <span class="dot">•</span>
+      <span>Business Development</span>
+    </div>
+
+    <div class="hero-dashboard-container gsap-reveal">
+      <div class="dashboard-mockup">
+        <div class="mockup-header">
+          <div class="browser-dots">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="browser-address">themefisher.com</div>
+        </div>
+        <div class="mockup-body">
+          <div class="sidebar">
+            <div class="logo-mini">✳️</div>
+            <div class="nav-items">
+              <div class="item active"></div>
+              <div class="item"></div>
+              <div class="item"></div>
+            </div>
+          </div>
+          <div class="main-content">
+            <div class="top-bar">
+              <h3>Dashboard</h3>
+              <p>Today, January 16, 2024</p>
+            </div>
+            <div class="dashboard-grid">
+              <div class="dash-card">
+                <div class="card-label">Monthly Sales</div>
+                <div class="card-val">25.4k</div>
+                <div class="card-footer">Total product</div>
+              </div>
+              <div class="dash-card">
+                <div class="card-label">Revenue Summary</div>
+                <div class="card-val">$6,35,240</div>
+              </div>
+              <div class="dash-card real-time">
+                <div class="card-label">Real-time</div>
+                <div class="card-val">49</div>
+                <div class="mini-chart"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-top: 140px;
+    padding-bottom: 120px;
+    text-align: center;
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero-bg-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    overflow: hidden;
+  }
+
+  .glow-item {
+    position: absolute;
+    width: 60vw;
+    height: 60vw;
+    filter: blur(120px);
+    opacity: 0.25;
+    border-radius: 50%;
+    transition: opacity 0.5s ease;
+  }
+
+  /* Reduce glow intensity in light mode */
+  :global([data-theme="light"]) .glow-item {
+    opacity: 0.08;
+  }
+
+  .glow-item.red {
+    background: #e11d48;
+    top: 10%;
+    right: -20%;
+    animation: flow 20s infinite alternate;
+  }
+
+  .glow-item.blue {
+    background: #2563eb;
+    bottom: -10%;
+    left: -20%;
+    animation: flow 25s infinite alternate-reverse;
+  }
+
+  @keyframes flow {
+    0% {
+      transform: translate(0, 0) scale(1);
+    }
+    100% {
+      transform: translate(5%, 5%) scale(1.1);
+    }
+  }
+
+  .search-tool-wrapper {
+    margin-bottom: 2.5rem;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    z-index: 20;
+  }
+
+  .hero-title {
+    font-size: clamp(2.2rem, 5.5vw, 4.8rem);
+    max-width: 1100px;
+    margin: 0 auto 2rem;
+    background: linear-gradient(180deg, var(--hero-title-from) 40%, var(--hero-title-to) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  .hero-subtitle {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    max-width: 750px;
+    margin: 0 auto 3rem;
+    line-height: 1.5;
+    font-family: var(--font-sans);
+  }
+
+  .hero-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+
+  .btn-hero {
+    padding: 1.1rem 2.2rem;
+    font-size: 1.1rem;
+    border-radius: 9999px;
+  }
+
+  .hero-footer-text {
+    font-size: 0.95rem;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 6rem;
+  }
+
+  .dot {
+    color: var(--text-dim);
+  }
+
+  .hero-dashboard-container {
+    width: 100%;
+    max-width: 1200px;
+    perspective: 1000px;
+  }
+
+  .dashboard-mockup {
+    background: var(--bg-sidebar);
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    transform: rotateX(10deg);
+  }
+
+  .mockup-header {
+    height: 50px;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+    gap: 2rem;
+  }
+
+  .browser-dots {
+    display: flex;
+    gap: 8px;
+  }
+  .browser-dots span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--border-medium);
+  }
+
+  .browser-address {
+    background: var(--bg-glass);
+    padding: 4px 16px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .mockup-body {
+    display: flex;
+    height: 500px;
+  }
+
+  .sidebar {
+    width: 80px;
+    border-right: 1px solid var(--border-subtle);
+    padding: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+  }
+
+  .nav-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .nav-items .item {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--border-subtle);
+  }
+  .nav-items .item.active {
+    background: #3b82f6;
+  }
+
+  .main-content {
+    flex: 1;
+    padding: 2.5rem;
+    text-align: left;
+  }
+
+  .top-bar {
+    margin-bottom: 3rem;
+  }
+  .top-bar h3 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+  }
+  .top-bar p {
+    color: var(--text-muted);
+  }
+
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .dash-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
+
+  .card-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+  .card-val {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+
+  .mini-chart {
+    height: 60px;
+    background: linear-gradient(
+      180deg,
+      rgba(59, 130, 246, 0.1) 0%,
+      transparent 100%
+    );
+    margin-top: 1rem;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mini-chart::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: #3b82f6;
+  }
+</style>

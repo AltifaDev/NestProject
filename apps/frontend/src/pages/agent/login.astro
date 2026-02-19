@@ -1,0 +1,151 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AgentLoginForm from "../../components/AgentLoginForm.tsx";
+---
+
+<BaseLayout title="Agent Login | Nest of Assets">
+    <div class="login-page">
+        <div class="login-card">
+            <AgentLoginForm client:load />
+        </div>
+    </div>
+</BaseLayout>
+
+<style is:global>
+    .login-page {
+        min-height: 100vh;
+        background-color: #020617;
+        background-image: 
+            radial-gradient(circle at 0% 0%, rgba(29, 78, 216, 0.15), transparent 40%),
+            radial-gradient(circle at 100% 100%, rgba(88, 28, 135, 0.15), transparent 40%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
+
+    .login-card {
+        width: 100%;
+        max-width: 480px;
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(40px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 48px;
+        padding: 4rem 3rem;
+        box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.7);
+    }
+
+    /* Form Internal Styles */
+    .agent-form-container {
+        display: flex;
+        flex-direction: column;
+        gap: 2.5rem;
+    }
+
+    .form-header {
+        text-align: center;
+    }
+
+    .form-header .title {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: white;
+        letter-spacing: -0.05em;
+        margin-bottom: 0.5rem;
+        line-height: 1;
+    }
+
+    .form-header .highlight {
+        color: #3b82f6;
+    }
+
+    .form-header .subtitle {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+
+    .login-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+
+    .input-field {
+        position: relative;
+        width: 100%;
+    }
+
+    .field-icon {
+        position: absolute;
+        left: 1.25rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(255, 255, 255, 0.25);
+        pointer-events: none;
+        z-index: 10;
+    }
+
+    .form-input {
+        width: 100%;
+        min-height: 4rem; /* Fix squashing */
+        background: rgba(255, 255, 255, 0.05);
+        border: 1.5px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 0 1.5rem 0 3.5rem;
+        color: white;
+        font-size: 1rem;
+        font-weight: 500;
+        outline: none;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: block;
+    }
+
+    .form-input:focus {
+        border-color: #3b82f6;
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+    }
+
+    .submit-button {
+        width: 100%;
+        min-height: 4rem; /* Fix squashing */
+        background: white;
+        color: black;
+        border: none;
+        border-radius: 20px;
+        font-weight: 800;
+        font-size: 0.95rem;
+        letter-spacing: 0.02em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-top: 1rem;
+    }
+
+    .submit-button:hover {
+        background: #3b82f6;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px -10px rgba(59, 130, 246, 0.5);
+    }
+
+    .submit-button:active {
+        transform: translateY(0);
+    }
+
+    .error-badge {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        color: #fca5a5;
+        padding: 1rem;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.875rem;
+    }
+</style>

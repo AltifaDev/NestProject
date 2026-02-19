@@ -1,0 +1,124 @@
+---
+const testimonials = [
+  {
+    text: "As a foreign investor, I was concerned about the complexities of setting up a business in Thailand. Nest of Assets made the process seamless, providing expert guidance every step of the way.",
+    author: "Sarah Williams",
+    role: "Managing Director, Wellness Ventures International",
+    size: "large",
+  },
+  {
+    text: "Working with Nest of Assets transformed our business entry into Thailand. Their expertise in navigating local regulations was invaluable.",
+    author: "Michael Thompson",
+    role: "CEO, Global Hospitality Group",
+    size: "small",
+  },
+];
+---
+
+<section class="testimonials-section">
+  <div class="container">
+    <div class="section-header text-center gsap-reveal">
+      <h2 class="section-title">Trusted by Investors</h2>
+    </div>
+
+    <div class="testimonials-bento gsap-reveal">
+      {
+        testimonials.map((t) => (
+          <div class={`testimonial-card ${t.size}`}>
+            <div class="stars">★★★★★</div>
+            <p class="t-text">"{t.text}"</p>
+            <div class="t-author">
+              <div class="avatar" />
+              <div class="details">
+                <strong>{t.author}</strong>
+                <span>{t.role}</span>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .testimonials-section {
+    padding: 100px 0;
+  }
+  .text-center {
+    text-align: center;
+  }
+  .section-title {
+    font-size: 3.5rem;
+    margin-bottom: 5rem;
+    color: var(--text-primary);
+  }
+
+  .testimonials-bento {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 1.5rem;
+  }
+
+  .testimonial-card {
+    background: var(--bg-card);
+    border: 1px solid var(--card-border);
+    border-radius: 32px;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .testimonial-card.large {
+    grid-row: span 2;
+  }
+
+  .stars {
+    color: #facc15;
+    margin-bottom: 2rem;
+    font-size: 1.25rem;
+  }
+  .t-text {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    line-height: 1.5;
+    margin-bottom: 3rem;
+    font-weight: 500;
+    font-style: italic;
+  }
+  .testimonial-card.small .t-text {
+    font-size: 1.1rem;
+  }
+
+  .t-author {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .avatar {
+    width: 48px;
+    height: 48px;
+    background: var(--card-bg-alpha);
+    border-radius: 50%;
+  }
+  .details strong {
+    display: block;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+  }
+  .details span {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 991px) {
+    .testimonials-bento {
+      grid-template-columns: 1fr;
+    }
+    .testimonial-card.large {
+      grid-row: auto;
+    }
+  }
+</style>

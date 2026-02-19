@@ -1,0 +1,284 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import AuthForm from "../components/AuthForm.tsx";
+---
+
+<BaseLayout title="Sign In | Nest of Assets">
+    <div class="login-wrapper">
+        <div class="background-effects">
+            <div class="bg-image"></div>
+            <div class="noise"></div>
+            <div class="glow-orb top-left"></div>
+            <div class="glow-orb bottom-right"></div>
+        </div>
+
+        <div class="content gsap-reveal">
+            <div class="brand">
+                <a href="/" class="logo">
+                    <div class="logo-icon">N</div>
+                    <span class="logo-text">Nest of Assets</span>
+                </a>
+            </div>
+
+            <div class="form-container">
+                <AuthForm client:load />
+            </div>
+
+            <div class="footer">
+                <p>&copy; 2026 Nest of Assets. Trusted Property Platform.</p>
+                <div class="links">
+                    <a href="#">Privacy</a>
+                    <span class="dot"></span>
+                    <a href="#">Terms</a>
+                    <span class="dot"></span>
+                    <a href="#">Security</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</BaseLayout>
+
+<style>
+    .login-wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+        padding: 2rem;
+        background-color: #020617;
+    }
+
+    .background-effects {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+    }
+
+    .bg-image {
+        position: absolute;
+        inset: 0;
+        background-image: url("/images/login-bg.png");
+        background-size: cover;
+        background-position: center;
+        opacity: 0.6;
+        filter: saturate(0.8) contrast(1.1);
+    }
+
+    .noise {
+        position: absolute;
+        inset: 0;
+        opacity: 0.15;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+        pointer-events: none;
+    }
+
+    .glow-orb {
+        position: absolute;
+        width: 800px;
+        height: 800px;
+        border-radius: 50%;
+        filter: blur(160px);
+        opacity: 0.2;
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    .top-left {
+        top: -20%;
+        left: -10%;
+        background: radial-gradient(
+            circle,
+            var(--accent-blue),
+            transparent 60%
+        );
+    }
+
+    .bottom-right {
+        bottom: -20%;
+        right: -10%;
+        background: radial-gradient(
+            circle,
+            var(--accent-purple),
+            transparent 60%
+        );
+    }
+
+    .content {
+        width: 100%;
+        max-width: 520px;
+        position: relative;
+        z-index: 10;
+        opacity: 1;
+    }
+
+    .brand {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 3.5rem;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+    }
+
+    .logo-icon {
+        width: 52px;
+        height: 52px;
+        background: linear-gradient(135deg, #ffffff 0%, #a5a5a5 100%);
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        color: #000;
+        font-size: 1.75rem;
+        box-shadow: 0 10px 30px -5px rgba(255, 255, 255, 0.2);
+    }
+
+    .logo-text {
+        font-family: var(--font-display);
+        font-size: 1.85rem;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        color: white;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .form-container {
+        perspective: 1500px;
+    }
+
+    #auth-form-card {
+        padding: 3.5rem !important; /* Force p-14 equivalent if Tailwind fails */
+        transition: border-color 0.5s ease;
+    }
+
+    @media (max-width: 768px) {
+        #auth-form-card {
+            padding: 2.5rem !important;
+        }
+    }
+
+    .footer {
+        margin-top: 4rem;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 0.85rem;
+    }
+
+    .links {
+        margin-top: 0.75rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .links a {
+        color: rgba(255, 255, 255, 0.5);
+        transition: color 0.3s;
+    }
+
+    .links a:hover {
+        color: white;
+    }
+
+    .dot {
+        width: 3px;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+    }
+
+    /* Animation Entry */
+    :global(.gsap-reveal) {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+</style>
+
+<script>
+    import { gsap } from "gsap";
+
+    window.addEventListener("DOMContentLoaded", () => {
+        // Initial Entrance Logic
+        const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
+
+        tl.to(".gsap-reveal", {
+            opacity: 1,
+            y: 0,
+            duration: 1.8,
+            stagger: 0.2,
+        });
+
+        // Background Orbs Parallax
+        document.addEventListener("mousemove", (e) => {
+            const { clientX, clientY } = e;
+            const xPos = (clientX / window.innerWidth - 0.5) * 80;
+            const yPos = (clientY / window.innerHeight - 0.5) * 80;
+
+            gsap.to(".top-left", {
+                x: xPos,
+                y: yPos,
+                duration: 2.5,
+                ease: "power2.out",
+            });
+
+            gsap.to(".bottom-right", {
+                x: -xPos,
+                y: -yPos,
+                duration: 2.5,
+                ease: "power2.out",
+            });
+        });
+
+        // Logo Floating Animation
+        gsap.to(".logo", {
+            y: -12,
+            duration: 3,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+        });
+
+        // 3D Tilt Effect on the actual card
+        const card = document.getElementById("auth-form-card");
+        const container = document.querySelector(".form-container");
+
+        if (card && container) {
+            container.addEventListener("mousemove", (e: any) => {
+                const rect = container.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const rotateX = (y - centerY) / 25;
+                const rotateY = (centerX - x) / 25;
+
+                gsap.to(card, {
+                    rotationX: rotateX,
+                    rotationY: rotateY,
+                    transformPerspective: 1500,
+                    duration: 0.6,
+                    ease: "power2.out",
+                });
+            });
+
+            container.addEventListener("mouseleave", () => {
+                gsap.to(card, {
+                    rotationX: 0,
+                    rotationY: 0,
+                    duration: 1.5,
+                    ease: "elastic.out(1, 0.3)",
+                });
+            });
+        }
+    });
+</script>
