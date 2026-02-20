@@ -39,6 +39,12 @@
     ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "fetch_props.ts",
+    "check_payload.ts",
+    "seed_props.ts",
+    "seed_link_user.ts",
+    "seed_check.ts",
+    "seed.ts"
   ],
 }

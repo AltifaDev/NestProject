@@ -14,7 +14,9 @@ export const Amenities: CollectionConfig = {
         {
             name: 'icon',
             type: 'text',
-            description: 'Lucide icon name (e.g., Wifi, AirVent)',
+            admin: {
+                description: 'Lucide icon name (e.g., Wifi, AirVent)',
+            },
         },
     ],
 }

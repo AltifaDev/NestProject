@@ -8,8 +8,8 @@ const dirname = path.dirname(filename)
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Your Next.js config here
+  serverExternalPackages: ['sharp', 'onnxruntime-node'],
   experimental: {
-    serverExternalPackages: ['sharp', 'onnxruntime-node'],
   },
   webpack: (config) => {
     config.resolve.alias = {
