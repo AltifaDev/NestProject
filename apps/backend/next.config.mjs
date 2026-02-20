@@ -8,8 +8,17 @@ const dirname = path.dirname(filename)
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Your Next.js config here
+  experimental: {
+    serverExternalPackages: ['sharp', 'onnxruntime-node'],
+  },
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@payload-config': path.resolve(dirname, 'src/payload.config.ts'),
+      '@': path.resolve(dirname, 'src'),
+    }
+    return config
+  },
 }
 
-export default withPayload(nextConfig, {
-  configPath: path.resolve(dirname, 'src/payload.config.ts'),
-})
+export default withPayload(nextConfig)
