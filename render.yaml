@@ -17,6 +17,8 @@ services:
           name: nest-backend
           type: web
           property: host
+      - key: PAYLOAD_CONFIG_PATH
+        value: src/payload.config.ts
       - key: NODE_ENV
         value: production
 
