@@ -387,6 +387,9 @@ export interface Property {
 export interface Amenity {
   id: number;
   name: string;
+  /**
+   * Lucide icon name (e.g., Wifi, AirVent)
+   */
   icon?: string | null;
   updatedAt: string;
   createdAt: string;
