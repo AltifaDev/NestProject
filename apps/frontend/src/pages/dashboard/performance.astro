@@ -1,10 +1,10 @@
 ---
 import DashboardLayout from "../../layouts/DashboardLayout.astro";
-import OverviewDashboard from "../../components/dashboard/OverviewDashboard.tsx";
+import AnalyticsDashboard from "../../components/dashboard/AnalyticsDashboard.tsx";
 import NotificationBell from "../../components/dashboard/NotificationBell.tsx";
 ---
 
-<DashboardLayout title="แผงควบคุมเอเจ้น | NEST Elite Dashboard">
+<DashboardLayout title="Analytics | NEST Elite Dashboard">
     <div class="dashboard-root">
         <!-- Sidebar Navigation -->
         <aside class="dashboard-sidebar">
@@ -21,7 +21,7 @@ import NotificationBell from "../../components/dashboard/NotificationBell.tsx";
             <nav class="sidebar-menu">
                 <div class="menu-section">
                     <span class="section-title">CORE</span>
-                    <a href="/dashboard" class="menu-item active">
+                    <a href="/dashboard" class="menu-item">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="item-icon"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
                         <span>Overview</span>
                     </a>
@@ -53,7 +53,7 @@ import NotificationBell from "../../components/dashboard/NotificationBell.tsx";
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="item-icon"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg>
                         <span>Marketing</span>
                     </a>
-                    <a href="/dashboard/performance" class="menu-item">
+                    <a href="/dashboard/performance" class="menu-item active">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="item-icon"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
                         <span>Analytics</span>
                     </a>
@@ -80,8 +80,8 @@ import NotificationBell from "../../components/dashboard/NotificationBell.tsx";
         <main class="dashboard-main">
             <header class="main-header">
                 <div class="greeting-box">
-                    <h1 class="welcome-text">Welcome Back</h1>
-                    <p id="user-display" class="user-id">Hello, Agent ✨</p>
+                    <h1 class="welcome-text">Analytics</h1>
+                    <p id="user-display" class="user-id">Performance Overview ✨</p>
                 </div>
                 <div class="header-actions">
                     <NotificationBell client:load />
@@ -97,7 +97,7 @@ import NotificationBell from "../../components/dashboard/NotificationBell.tsx";
 
             <div class="main-scroll">
                 <div class="content-wrapper">
-                    <OverviewDashboard client:load />
+                    <AnalyticsDashboard client:load />
                 </div>
             </div>
         </main>
@@ -116,15 +116,11 @@ import NotificationBell from "../../components/dashboard/NotificationBell.tsx";
         localStorage.setItem('theme', newTheme);
     });
 
+    // User Info Display
     const user = payloadClient.getUser();
     if (user) {
-        const display = document.getElementById('user-display');
         const displayFull = document.getElementById('user-email-full');
-        const hour = new Date().getHours();
-        const greet = hour < 12 ? 'Good Morning' : hour < 18 ? 'Good Afternoon' : 'Good Evening';
-        
-        if (display) display.textContent = `${greet}, ${user.email.split('@')[0]} 👋`;
-        if (displayFull) displayFull.textContent = user.email;
+        if (displayFull && user.email) displayFull.textContent = user.email;
     }
 
     // Logout
@@ -134,11 +130,12 @@ import NotificationBell from "../../components/dashboard/NotificationBell.tsx";
             window.location.href = "/agent/login";
         }
     });
+
 </script>
 
 <style>
     /* ============================================================
-       ROOT LAYOUT
+       ROOT LAYOUT (Copied from properties.astro)
        ============================================================ */
     .dashboard-root {
         display: flex;
@@ -355,7 +352,7 @@ import NotificationBell from "../../components/dashboard/NotificationBell.tsx";
        ============================================================ */
     .dashboard-main {
         flex: 1;
-        min-width: 0; /* Critical: prevents flex child from overflowing */
+        min-width: 0;
         display: flex;
         flex-direction: column;
         overflow: hidden;
@@ -401,6 +398,7 @@ import NotificationBell from "../../components/dashboard/NotificationBell.tsx";
         display: flex;
         align-items: center;
         flex-shrink: 0;
+        gap: 1rem;
     }
 
     .profile-summary {
@@ -459,6 +457,8 @@ import NotificationBell from "../../components/dashboard/NotificationBell.tsx";
     .content-wrapper {
         padding: 2rem;
         max-width: 100%;
+        display: flex;
+        justify-content: center;
     }
 
     /* ============================================================
@@ -499,7 +499,7 @@ import NotificationBell from "../../components/dashboard/NotificationBell.tsx";
             border-bottom: 1px solid var(--border-subtle);
         }
         .sidebar-menu { display: none; }
-        .main-header { height: auto; padding: 1.25rem 1.5rem; }
+        .main-header { height: auto; padding: 1.25rem 1.5rem; flex-wrap: wrap;}
         .content-wrapper { padding: 1.25rem; }
     }
 </style>

@@ -7,9 +7,10 @@ export const Users: CollectionConfig = {
   },
   auth: true,
   access: {
+    read: () => true,
     admin: ({ req: { user } }) => {
-      // Allow access if the user has an 'admin' role
-      return user?.role === 'admin'
+      // Allow access if the user has an 'admin' or 'agent' role
+      return user?.role === 'admin' || user?.role === 'agent'
     },
   },
   fields: [
@@ -29,6 +30,7 @@ export const Users: CollectionConfig = {
       type: 'relationship',
       relationTo: 'agents',
       hasMany: false,
+      saveToJWT: true,
       admin: {
         condition: (data) => data?.role === 'agent',
       },

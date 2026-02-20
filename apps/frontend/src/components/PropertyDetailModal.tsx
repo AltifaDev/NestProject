@@ -7,7 +7,7 @@ import {
   Trees, Wifi, Wind, Flame, Tv, Refrigerator, ChevronRight,
   Clock, Hash, TrendingUp, Star, ExternalLink, Copy, Check,
   ChevronLeft, Maximize2, Layers, SquareParking, Sofa, Droplets,
-  Train, Plane, Store, GraduationCap, Stethoscope, ShoppingCart
+  Train, Plane, Store, GraduationCap, Stethoscope, ShoppingCart, Loader2
 } from 'lucide-react';
 import type { Property, NearbyPlace } from '../lib/api-client';
 
@@ -87,6 +87,12 @@ export default function PropertyDetailModal({ property, isOpen, onClose }: Prope
   const [showFullGallery, setShowFullGallery] = useState(false);
   const [copied, setCopied] = useState(false);
   const [heartActive, setHeartActive] = useState(false);
+
+  // Lead Form States
+  const [showContactForm, setShowContactForm] = useState(false);
+  const [contactForm, setContactForm] = useState({ name: '', phone: '', email: '', message: '' });
+  const [submittingLead, setSubmittingLead] = useState(false);
+  const [leadSuccess, setLeadSuccess] = useState(false);
 
   // Scroll to top visibility logic
   useEffect(() => {
@@ -202,6 +208,52 @@ export default function PropertyDetailModal({ property, isOpen, onClose }: Prope
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
+  };
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!property) return;
+
+    setSubmittingLead(true);
+    try {
+      // payload URL needs to be correctly identified (usually window.location.origin in production if same domain, or env var)
+      const payloadUrl = import.meta.env.PUBLIC_PAYLOAD_URL || 'http://localhost:3000';
+      const agentId = typeof property.agent === 'object' ? property.agent?.id : property.agent;
+
+      const parsedPropertyId = property.id ? parseInt(property.id.toString(), 10) : null;
+      const parsedAgentId = agentId ? parseInt(agentId.toString(), 10) : null;
+
+      const res = await fetch(`${payloadUrl}/api/leads`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: contactForm.name,
+          email: contactForm.email,
+          phone: contactForm.phone,
+          message: contactForm.message || `I am interested in ${property.title}`,
+          property: Number.isNaN(parsedPropertyId) ? null : parsedPropertyId,
+          agent: Number.isNaN(parsedAgentId) ? null : parsedAgentId,
+          source: 'website',
+          status: 'new'
+        })
+      });
+
+      if (res.ok) {
+        setLeadSuccess(true);
+        setTimeout(() => {
+          setShowContactForm(false);
+          setLeadSuccess(false);
+          setContactForm({ name: '', phone: '', email: '', message: '' });
+        }, 3000);
+      } else {
+        alert('Failed to send message. Please try again.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('An error occurred while sending your message.');
+    } finally {
+      setSubmittingLead(false);
+    }
   };
 
   // Format date from ISO string
@@ -370,13 +422,18 @@ export default function PropertyDetailModal({ property, isOpen, onClose }: Prope
               {copied ? <Check size={15} strokeWidth={2.5} className="text-emerald-500" /> : <Share2 size={15} strokeWidth={2.5} />}
               <span>{copied ? 'Copied' : 'Share'}</span>
             </button>
-            <a
-              href={`tel:${property.agent?.phone || ''}`}
+            <button
+              onClick={() => {
+                setShowContactForm(true);
+                // Scroll the sidebar card into view if on mobile, or just let it smoothly open
+                const formEl = document.querySelector('.pdm-sidebar-card');
+                if (formEl) formEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }}
               className="pdm-header-btn-primary flex items-center gap-2 bg-slate-900 text-white rounded-xl text-xs font-bold transition-all hover:bg-slate-700 active:scale-95"
             >
-              <Phone size={15} strokeWidth={2.5} />
+              <MessageSquare size={15} strokeWidth={2.5} />
               <span>Contact</span>
-            </a>
+            </button>
           </div>
         </div>
 
@@ -727,44 +784,105 @@ export default function PropertyDetailModal({ property, isOpen, onClose }: Prope
                     )}
                   </div>
 
-                  {/* CTA Buttons */}
-                  <div className="flex flex-col" style={{ gap: '12px', marginBottom: '24px' }}>
-                    <a
-                      href={`tel:${property.agent?.phone || ''}`}
-                      className="pdm-cta-primary w-full flex items-center justify-center gap-2.5"
-                    >
-                      <Phone size={17} strokeWidth={2.5} />
-                      <span>Call</span>
-                      {property.agent?.phone && (
-                        <span className="opacity-80 text-xs">{property.agent.phone}</span>
+                  {/* CTA Buttons & Form */}
+                  {showContactForm ? (
+                    <div className="pdm-contact-form-container">
+                      <div className="pdm-contact-form-header">
+                        <h4 className="pdm-contact-form-title">Send a Message</h4>
+                        <button onClick={() => setShowContactForm(false)} className="pdm-contact-form-close">
+                          <X size={16} />
+                        </button>
+                      </div>
+
+                      {leadSuccess ? (
+                        <div className="flex flex-col items-center justify-center py-6 text-emerald-600 text-center">
+                          <CheckCircle2 size={36} className="mb-3" />
+                          <p className="font-bold text-base">Message Sent!</p>
+                          <p className="text-xs text-emerald-600/70 mt-1 leading-relaxed">The agent has been notified and will contact you shortly.</p>
+                        </div>
+                      ) : (
+                        <form onSubmit={handleContactSubmit} className="pdm-contact-form">
+                          <input
+                            required
+                            type="text"
+                            placeholder="Your Name *"
+                            value={contactForm.name}
+                            onChange={e => setContactForm({ ...contactForm, name: e.target.value })}
+                            className="pdm-contact-input"
+                          />
+                          <input
+                            required
+                            type="tel"
+                            placeholder="Phone Number *"
+                            value={contactForm.phone}
+                            onChange={e => setContactForm({ ...contactForm, phone: e.target.value })}
+                            className="pdm-contact-input"
+                          />
+                          <input
+                            type="email"
+                            placeholder="Email Address"
+                            value={contactForm.email}
+                            onChange={e => setContactForm({ ...contactForm, email: e.target.value })}
+                            className="pdm-contact-input"
+                          />
+                          <textarea
+                            placeholder="Hi, I am interested in this property..."
+                            value={contactForm.message}
+                            onChange={e => setContactForm({ ...contactForm, message: e.target.value })}
+                            rows={3}
+                            className="pdm-contact-textarea"
+                          />
+                          <button
+                            type="submit"
+                            disabled={submittingLead}
+                            className="pdm-contact-submit"
+                          >
+                            {submittingLead ? <Loader2 size={16} className="animate-spin" /> : 'Send Message'}
+                          </button>
+                        </form>
                       )}
-                    </a>
-                    <button className="pdm-cta-secondary w-full flex items-center justify-center gap-2.5">
-                      <MessageSquare size={17} strokeWidth={2.5} />
-                      <span>Message</span>
-                    </button>
-                    {property.agent?.lineId && (
+                    </div>
+                  ) : (
+                    <div className="flex flex-col" style={{ gap: '12px', marginBottom: '24px' }}>
                       <a
-                        href={`https://line.me/ti/p/${property.agent.lineId}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="pdm-cta-line w-full flex items-center justify-center gap-2.5"
+                        href={`tel:${property.agent?.phone || ''}`}
+                        className="pdm-cta-primary w-full flex items-center justify-center gap-2.5"
                       >
-                        {/* Line icon */}
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314" />
-                        </svg>
-                        <span>Contact via LINE</span>
+                        <Phone size={17} strokeWidth={2.5} />
+                        <span>Call</span>
+                        {property.agent?.phone && (
+                          <span className="opacity-80 text-xs">{property.agent.phone}</span>
+                        )}
                       </a>
-                    )}
-                    <a
-                      href={`mailto:${property.agent?.email || ''}`}
-                      className="pdm-cta-email w-full flex items-center justify-center gap-2.5"
-                    >
-                      <Mail size={17} strokeWidth={2.5} />
-                      <span>Send Email</span>
-                    </a>
-                  </div>
+                      <button
+                        onClick={() => setShowContactForm(true)}
+                        className="pdm-cta-secondary w-full flex items-center justify-center gap-2.5"
+                      >
+                        <MessageSquare size={17} strokeWidth={2.5} />
+                        <span>Message</span>
+                      </button>
+                      {property.agent?.lineId && (
+                        <a
+                          href={`https://line.me/ti/p/${property.agent.lineId}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="pdm-cta-line w-full flex items-center justify-center gap-2.5"
+                        >
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314" />
+                          </svg>
+                          <span>Contact via LINE</span>
+                        </a>
+                      )}
+                      <a
+                        href={`mailto:${property.agent?.email || ''}`}
+                        className="pdm-cta-email w-full flex items-center justify-center gap-2.5"
+                      >
+                        <Mail size={17} strokeWidth={2.5} />
+                        <span>Send Email</span>
+                      </a>
+                    </div>
+                  )}
 
                   <div className="h-px bg-slate-100" style={{ marginBottom: '20px' }} />
 
@@ -1017,6 +1135,124 @@ export default function PropertyDetailModal({ property, isOpen, onClose }: Prope
           border: 1px solid #e2e8f0;
           border-radius: 14px;
           padding: 14px 16px;
+        }
+
+        /* Contact Form */
+        .pdm-contact-form-container {
+          background-color: #f8fafc !important;
+          padding: 20px !important;
+          border-radius: 14px !important;
+          border: 1px solid #e2e8f0 !important;
+          display: flex !important;
+          flex-direction: column !important;
+          gap: 12px !important;
+          margin-bottom: 24px !important;
+        }
+        .pdm-contact-form-header {
+          display: flex !important;
+          justify-content: space-between !important;
+          align-items: center !important;
+          margin-bottom: 4px !important;
+        }
+        .pdm-contact-form-title {
+          font-weight: 700 !important;
+          color: #1e293b !important;
+          font-size: 0.875rem !important;
+          margin: 0 !important;
+        }
+        .pdm-contact-form-close {
+          color: #94a3b8 !important;
+          background: none !important;
+          border: none !important;
+          padding: 4px !important;
+          cursor: pointer !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          transition: color 0.2s !important;
+        }
+        .pdm-contact-form-close:hover {
+          color: #475569 !important;
+        }
+        .pdm-contact-form {
+          display: flex !important;
+          flex-direction: column !important;
+          gap: 12px !important;
+          margin: 0 !important;
+        }
+        .pdm-contact-input {
+          width: 100% !important;
+          font-size: 0.875rem !important;
+          padding: 12px 14px !important;
+          border: 1px solid #e2e8f0 !important;
+          border-radius: 10px !important; /* Force moderate roundness over pill */
+          background-color: #ffffff !important;
+          color: #0f172a !important;
+          outline: none !important;
+          transition: all 0.2s !important;
+          min-height: 44px !important;
+          height: auto !important;
+          line-height: normal !important;
+          box-sizing: border-box !important;
+          margin: 0 !important;
+        }
+        .pdm-contact-input::placeholder {
+          color: #94a3b8 !important;
+        }
+        .pdm-contact-input:focus {
+          border-color: #3b82f6 !important;
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+        }
+        .pdm-contact-textarea {
+          width: 100% !important;
+          font-size: 0.875rem !important;
+          padding: 14px !important;
+          border: 1px solid #e2e8f0 !important;
+          border-radius: 10px !important; /* Force moderate roundness over pill */
+          background-color: #ffffff !important;
+          color: #0f172a !important;
+          outline: none !important;
+          transition: all 0.2s !important;
+          min-height: 100px !important;
+          resize: none !important;
+          line-height: 1.5 !important;
+          box-sizing: border-box !important;
+          margin: 0 !important;
+        }
+        .pdm-contact-textarea::placeholder {
+          color: #94a3b8 !important;
+        }
+        .pdm-contact-textarea:focus {
+          border-color: #3b82f6 !important;
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+        }
+        .pdm-contact-submit {
+          width: 100% !important;
+          background-color: #2563eb !important;
+          color: white !important;
+          font-weight: 700 !important;
+          font-size: 0.875rem !important;
+          padding: 14px 20px !important;
+          border-radius: 10px !important; /* Force moderate roundness over pill */
+          border: none !important;
+          cursor: pointer !important;
+          transition: all 0.2s !important;
+          display: flex !important;
+          justify-content: center !important;
+          align-items: center !important;
+          gap: 8px !important;
+          min-height: 48px !important;
+          margin-top: 4px !important;
+          box-sizing: border-box !important;
+          box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15) !important;
+        }
+        .pdm-contact-submit:hover:not(:disabled) {
+          background-color: #1d4ed8 !important;
+          transform: translateY(-1px) !important;
+        }
+        .pdm-contact-submit:disabled {
+          opacity: 0.7 !important;
+          cursor: not-allowed !important;
         }
 
         /* Sidebar */

@@ -72,6 +72,7 @@ export interface Config {
     properties: Property;
     agents: Agent;
     amenities: Amenity;
+    leads: Lead;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -84,6 +85,7 @@ export interface Config {
     properties: PropertiesSelect<false> | PropertiesSelect<true>;
     agents: AgentsSelect<false> | AgentsSelect<true>;
     amenities: AmenitiesSelect<false> | AmenitiesSelect<true>;
+    leads: LeadsSelect<false> | LeadsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -158,11 +160,40 @@ export interface Agent {
   photo?: (number | null) | Media;
   phone?: string | null;
   email?: string | null;
+  whatsapp?: string | null;
   lineId?: string | null;
+  facebook?: string | null;
+  linkedin?: string | null;
+  instagram?: string | null;
   /**
-   * Short professional biography
+   * Short professional biography (summary)
    */
   bio?: string | null;
+  /**
+   * Detailed professional background
+   */
+  fullBio?: string | null;
+  licenseNumber?: string | null;
+  experienceYears?: number | null;
+  languages?:
+    | (
+        | 'English'
+        | 'Thai'
+        | 'Mandarin'
+        | 'Cantonese'
+        | 'Japanese'
+        | 'Korean'
+        | 'Russian'
+        | 'French'
+        | 'German'
+        | 'Spanish'
+      )[]
+    | null;
+  /**
+   * e.g. Sukhumvit, Sathorn, Thong Lo
+   */
+  serviceAreas?: string[] | null;
+  officeAddress?: string | null;
   verified?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -246,6 +277,10 @@ export interface Property {
      * Monthly common area maintenance fee per square meter
      */
     common_fee?: number | null;
+    /**
+     * Allowed for pets (dogs/cats)
+     */
+    pet_friendly?: boolean | null;
   };
   /**
    * Select which indoor amenities are available
@@ -307,6 +342,10 @@ export interface Property {
    * Main cover image for the listing
    */
   thumbnail?: (number | null) | Media;
+  /**
+   * YouTube or Vimeo link for virtual tour
+   */
+  video_url?: string | null;
   images?:
     | {
         image: number | Media;
@@ -354,6 +393,29 @@ export interface Amenity {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leads".
+ */
+export interface Lead {
+  id: number;
+  name: string;
+  email?: string | null;
+  phone?: string | null;
+  message?: string | null;
+  status: 'new' | 'contacted' | 'viewing' | 'negotiating' | 'closed_won' | 'closed_lost';
+  source?: ('website' | 'facebook' | 'instagram' | 'referral' | 'walkin' | 'other') | null;
+  /**
+   * The property they inquired about (if any)
+   */
+  property?: (number | null) | Property;
+  /**
+   * The agent handling this lead
+   */
+  agent?: (number | null) | Agent;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -395,6 +457,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'amenities';
         value: number | Amenity;
+      } | null)
+    | ({
+        relationTo: 'leads';
+        value: number | Lead;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -521,6 +587,7 @@ export interface PropertiesSelect<T extends boolean = true> {
         ownership?: T;
         decoration?: T;
         common_fee?: T;
+        pet_friendly?: T;
       };
   indoor_amenities?:
     | T
@@ -558,6 +625,7 @@ export interface PropertiesSelect<T extends boolean = true> {
         id?: T;
       };
   thumbnail?: T;
+  video_url?: T;
   images?:
     | T
     | {
@@ -583,8 +651,18 @@ export interface AgentsSelect<T extends boolean = true> {
   photo?: T;
   phone?: T;
   email?: T;
+  whatsapp?: T;
   lineId?: T;
+  facebook?: T;
+  linkedin?: T;
+  instagram?: T;
   bio?: T;
+  fullBio?: T;
+  licenseNumber?: T;
+  experienceYears?: T;
+  languages?: T;
+  serviceAreas?: T;
+  officeAddress?: T;
   verified?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -596,6 +674,22 @@ export interface AgentsSelect<T extends boolean = true> {
 export interface AmenitiesSelect<T extends boolean = true> {
   name?: T;
   icon?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leads_select".
+ */
+export interface LeadsSelect<T extends boolean = true> {
+  name?: T;
+  email?: T;
+  phone?: T;
+  message?: T;
+  status?: T;
+  source?: T;
+  property?: T;
+  agent?: T;
   updatedAt?: T;
   createdAt?: T;
 }

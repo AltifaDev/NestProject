@@ -29,7 +29,9 @@ const {
 		<link href="https://api.mapbox.com/mapbox-gl-js/v3.1.2/mapbox-gl.css" rel="stylesheet">
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 
-		<script is:inline>
+		<script>
+			import { payloadClient } from "../lib/payload-client";
+
 			// Theme Initialization
 			const theme = (() => {
 				if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
@@ -47,6 +49,17 @@ const {
 				document.documentElement.setAttribute('data-theme', 'dark');
 			}
 			window.localStorage.setItem('theme', theme);
+
+			// Auth & Role Check
+			const user = payloadClient.getUser();
+			if (!user) {
+				window.location.href = "/agent/login";
+			} else if (user.role !== 'agent') {
+				// Only agents allowed in this portal
+				console.warn('Access denied: User is not an agent');
+				payloadClient.logout(); // Use client logout to clear session
+				window.location.href = "/agent/login";
+			}
 		</script>
 	</head>
 	<body>

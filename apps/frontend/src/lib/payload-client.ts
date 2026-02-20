@@ -3,7 +3,7 @@
  * Handles authentication and CRUD for properties/agents
  */
 
-const PAYLOAD_URL = import.meta.env.PUBLIC_PAYLOAD_URL || 'http://localhost:3000';
+export const PAYLOAD_URL = import.meta.env.PUBLIC_PAYLOAD_URL || 'http://localhost:3000';
 
 class PayloadClient {
     private baseURL: string;
@@ -86,17 +86,40 @@ class PayloadClient {
         return null;
     }
 
-    // --- Properties CRUD ---
+    async getFreshestUser() {
+        const localUser = this.getUser();
+        if (!localUser) return null;
+        try {
+            const data = await this.request<any>('/api/users/me');
+            if (data?.user) {
+                if (typeof window !== 'undefined') {
+                    localStorage.setItem('payload_user', JSON.stringify(data.user));
+                }
+                return data.user;
+            }
+        } catch (error) {
+            console.warn('Failed to fetch freshest user data', error);
+        }
+        return localUser;
+    }
 
     async getMyProperties() {
-        const user = this.getUser();
-        if (!user || !user.agent) return { docs: [] };
+        // Fetch freshest user to ensure agent relationship is picked up if changed
+        const user = await this.getFreshestUser();
+        if (!user) return { docs: [] };
+
+        // If the user is an admin, they should see all properties
+        if (user.role === 'admin') {
+            return this.request<any>('/api/properties?depth=2&limit=100');
+        }
+
+        if (!user.agent) return { docs: [] };
 
         // Payload auto-filters by access control if logged in, 
         // but explicit filter is clearer
         // depth=2 to populate agent and thumbnail relationships
         const agentId = typeof user.agent === 'object' ? user.agent.id : user.agent;
-        return this.request<any>(`/api/properties?where[agent][equals]=${agentId}&depth=2`);
+        return this.request<any>(`/api/properties?where[agent][equals]=${agentId}&depth=2&limit=100`);
     }
 
     async createProperty(data: any) {

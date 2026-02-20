@@ -41,39 +41,17 @@ import SearchTool from "./SearchTool.astro";
           <div class="browser-dots">
             <span></span><span></span><span></span>
           </div>
-          <div class="browser-address">themefisher.com</div>
+          <div class="browser-address">nest-of-assets.com</div>
         </div>
         <div class="mockup-body">
-          <div class="sidebar">
-            <div class="logo-mini">✳️</div>
-            <div class="nav-items">
-              <div class="item active"></div>
-              <div class="item"></div>
-              <div class="item"></div>
-            </div>
-          </div>
-          <div class="main-content">
-            <div class="top-bar">
-              <h3>Dashboard</h3>
-              <p>Today, January 16, 2024</p>
-            </div>
-            <div class="dashboard-grid">
-              <div class="dash-card">
-                <div class="card-label">Monthly Sales</div>
-                <div class="card-val">25.4k</div>
-                <div class="card-footer">Total product</div>
-              </div>
-              <div class="dash-card">
-                <div class="card-label">Revenue Summary</div>
-                <div class="card-val">$6,35,240</div>
-              </div>
-              <div class="dash-card real-time">
-                <div class="card-label">Real-time</div>
-                <div class="card-val">49</div>
-                <div class="mini-chart"></div>
-              </div>
-            </div>
-          </div>
+          <video 
+            src="https://res.cloudinary.com/dgbrieymr/video/upload/q_auto,f_auto/v1771533564/Thailand_Real_Estate_Video_Generation_kzhhyn.mp4" 
+            autoplay 
+            muted 
+            loop 
+            playsinline
+            class="dashboard-video"
+          ></video>
         </div>
       </div>
     </div>
@@ -248,95 +226,16 @@ import SearchTool from "./SearchTool.astro";
 
   .mockup-body {
     display: flex;
-    height: 500px;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    background: #000;
   }
 
-  .sidebar {
-    width: 80px;
-    border-right: 1px solid var(--border-subtle);
-    padding: 2rem 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3rem;
-  }
-
-  .nav-items {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-  .nav-items .item {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    background: var(--border-subtle);
-  }
-  .nav-items .item.active {
-    background: #3b82f6;
-  }
-
-  .main-content {
-    flex: 1;
-    padding: 2.5rem;
-    text-align: left;
-  }
-
-  .top-bar {
-    margin-bottom: 3rem;
-  }
-  .top-bar h3 {
-    font-size: 1.8rem;
-    margin-bottom: 0.5rem;
-    color: var(--text-main);
-  }
-  .top-bar p {
-    color: var(--text-muted);
-  }
-
-  .dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-  }
-
-  .dash-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-    padding: 1.5rem;
-    border-radius: 12px;
-  }
-
-  .card-label {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    margin-bottom: 0.75rem;
-  }
-  .card-val {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--text-main);
-  }
-
-  .mini-chart {
-    height: 60px;
-    background: linear-gradient(
-      180deg,
-      rgba(59, 130, 246, 0.1) 0%,
-      transparent 100%
-    );
-    margin-top: 1rem;
-    border-radius: 4px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .mini-chart::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
+  .dashboard-video {
     width: 100%;
-    height: 2px;
-    background: #3b82f6;
+    height: 100%;
+    object-fit: cover;
   }
+
+
 </style>

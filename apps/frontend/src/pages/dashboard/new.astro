@@ -1,6 +1,7 @@
 ---
 import DashboardLayout from "../../layouts/DashboardLayout.astro";
 import PropertyForm from "../../components/dashboard/PropertyForm.tsx";
+import NotificationBell from "../../components/dashboard/NotificationBell.tsx";
 ---
 
 <DashboardLayout title="Add New Property | Nest Elite">
@@ -79,6 +80,7 @@ import PropertyForm from "../../components/dashboard/PropertyForm.tsx";
                     <p id="user-display" class="user-id">Drafting your next success ✨</p>
                 </div>
                 <div class="header-actions">
+                    <NotificationBell client:load />
                     <div class="profile-summary">
                         <div class="profile-text">
                             <span id="user-email-full" class="email-label"></span>

@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { syncPropertyToSupabase } from '../lib/supabase-sync'
 
 export const Properties: CollectionConfig = {
     slug: 'properties',
@@ -33,6 +34,18 @@ export const Properties: CollectionConfig = {
         },
     },
     hooks: {
+        afterChange: [
+            ({ doc, operation }) => {
+                if (operation === 'create' || operation === 'update') {
+                    syncPropertyToSupabase(doc as any, 'upsert')
+                }
+            },
+        ],
+        afterDelete: [
+            ({ doc }) => {
+                syncPropertyToSupabase(doc as any, 'delete')
+            },
+        ],
         beforeChange: [
             ({ req, operation, data }) => {
                 if (operation === 'create' && req.user?.role === 'agent' && req.user?.agent) {
@@ -269,6 +282,15 @@ export const Properties: CollectionConfig = {
                         description: 'Monthly common area maintenance fee per square meter',
                     },
                 },
+                {
+                    name: 'pet_friendly',
+                    type: 'checkbox',
+                    label: 'Pet Friendly',
+                    defaultValue: false,
+                    admin: {
+                        description: 'Allowed for pets (dogs/cats)',
+                    },
+                },
             ],
         },
 
@@ -377,6 +399,14 @@ export const Properties: CollectionConfig = {
             relationTo: 'media',
             admin: {
                 description: 'Main cover image for the listing',
+            },
+        },
+        {
+            name: 'video_url',
+            type: 'text',
+            label: 'Video Tour URL',
+            admin: {
+                description: 'YouTube or Vimeo link for virtual tour',
             },
         },
         {

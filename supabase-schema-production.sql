@@ -100,6 +100,56 @@ CREATE TABLE IF NOT EXISTS public.property_inquiries (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- 5b. MEDIA TABLE (for images - required for agents.photo relationship)
+CREATE TABLE IF NOT EXISTS public.media (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    url TEXT NOT NULL,
+    filename TEXT,
+    mime_type TEXT,
+    size INTEGER,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Enable RLS on media
+ALTER TABLE public.media ENABLE ROW LEVEL SECURITY;
+
+-- Allow public read access to media
+CREATE POLICY "public_read_media" ON public.media
+    FOR SELECT TO anon, authenticated USING (true);
+
+-- 5c. AGENTS TABLE (synced from Payload)
+CREATE TABLE IF NOT EXISTS public.agents (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    name TEXT NOT NULL,
+    role TEXT DEFAULT 'agent',
+    phone TEXT,
+    email TEXT,
+    line_id TEXT,
+    bio TEXT,
+    verified BOOLEAN DEFAULT false,
+    photo_id UUID REFERENCES public.media(id),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Enable RLS on agents
+ALTER TABLE public.agents ENABLE ROW LEVEL SECURITY;
+
+-- Allow public read access to agents
+CREATE POLICY "public_read_agents" ON public.agents
+    FOR SELECT TO anon, authenticated USING (true);
+
+-- Add agent_id column to properties table (if not exists)
+-- This creates the foreign key relationship needed for the query
+DO $$ 
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'properties' AND column_name = 'agent_id') THEN
+        ALTER TABLE public.properties ADD COLUMN agent_id UUID REFERENCES public.agents(id);
+    END IF;
+EXCEPTION
+    WHEN duplicate_column THEN null;
+END $$;
+
 -- 6. INDEXES FOR PERFORMANCE
 -- Spatial Index for "Search Nearby"
 CREATE INDEX IF NOT EXISTS idx_properties_location ON public.properties USING GIST(location);

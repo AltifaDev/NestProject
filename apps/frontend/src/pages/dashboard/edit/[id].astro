@@ -102,6 +102,367 @@ const property = await payloadClient.getProperty(id as string);
     </div>
 </BaseLayout>
 
+<style>
+    /* ============================================================
+       DASHBOARD LAYOUT
+       ============================================================ */
+    .dashboard-root {
+        display: flex;
+        height: 100vh;
+        width: 100vw;
+        background-color: var(--bg-main);
+        overflow: hidden;
+    }
+
+    /* ============================================================
+       SIDEBAR
+       ============================================================ */
+    .dashboard-sidebar {
+        width: var(--sidebar-width, 260px);
+        min-width: var(--sidebar-width, 260px);
+        background-color: var(--bg-sidebar);
+        border-right: 1px solid var(--border-subtle);
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        z-index: 50;
+        overflow: hidden;
+    }
+
+    .sidebar-header {
+        padding: 2rem 1.5rem 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .brand-box {
+        display: flex;
+        align-items: center;
+        gap: 0.875rem;
+    }
+
+    .brand-logo {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        background-color: var(--text-main);
+        color: var(--bg-sidebar);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 1.1rem;
+        box-shadow: 0 6px 14px -4px rgba(0,0,0,0.3);
+    }
+
+    .brand-info {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .brand-name {
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        font-size: 0.85rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: var(--text-main);
+    }
+
+    .brand-tag {
+        font-size: 0.58rem;
+        color: var(--text-dim);
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        margin-top: 1px;
+        white-space: nowrap;
+    }
+
+    .sidebar-menu {
+        flex: 1;
+        padding: 0 1rem;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .menu-section {
+        margin-bottom: 2rem;
+    }
+
+    .section-title {
+        display: block;
+        font-size: 9.5px;
+        font-weight: 700;
+        color: var(--text-dim);
+        letter-spacing: 0.14em;
+        margin-bottom: 0.625rem;
+        padding-left: 0.625rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .menu-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 0.875rem;
+        border-radius: 12px;
+        color: var(--text-muted);
+        font-weight: 500;
+        font-size: 0.875rem;
+        transition: all 0.25s ease;
+        margin-bottom: 0.2rem;
+        background: transparent;
+        border: none;
+        width: 100%;
+        text-align: left;
+        cursor: pointer;
+        text-decoration: none;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .menu-item span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .item-icon {
+        flex-shrink: 0;
+    }
+
+    .menu-item:hover {
+        background-color: var(--bg-card);
+        color: var(--text-main);
+    }
+
+    .menu-item.active {
+        background-color: var(--accent-primary);
+        color: white;
+        box-shadow: 0 8px 16px -8px var(--accent-primary);
+    }
+
+    .menu-item.logout {
+        color: var(--accent-danger);
+    }
+
+    .menu-item.logout:hover {
+        background-color: rgba(239, 68, 68, 0.08);
+        color: var(--accent-danger);
+    }
+
+    .sidebar-footer {
+        padding: 1.25rem 1rem;
+        margin-top: auto;
+        flex-shrink: 0;
+    }
+
+    .theme-switch {
+        width: 100%;
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: 12px;
+        padding: 0.625rem 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: var(--text-muted);
+        font-size: 0.825rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .theme-switch:hover {
+        background: var(--bg-glass);
+        color: var(--text-main);
+    }
+
+    .switch-icons {
+        width: 28px;
+        height: 28px;
+        min-width: 28px;
+        background: var(--bg-sidebar);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .switch-text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .sun-icon { display: none; }
+    .moon-icon { display: block; }
+
+    :root[data-theme="light"] .sun-icon { display: block; }
+    :root[data-theme="light"] .moon-icon { display: none; }
+
+    .footer-divider {
+        height: 1px;
+        background: var(--border-subtle);
+        margin: 1rem 0.25rem;
+    }
+
+    /* ============================================================
+       MAIN CONTENT AREA
+       ============================================================ */
+    .main-content {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .main-header {
+        height: var(--header-height, 72px);
+        min-height: var(--header-height, 72px);
+        padding: 0 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--bg-main);
+        border-bottom: 1px solid var(--border-subtle);
+        flex-shrink: 0;
+        gap: 1rem;
+    }
+
+    .greeting-box {
+        min-width: 0;
+        overflow: hidden;
+    }
+
+    .welcome-text {
+        font-size: 1.5rem;
+        font-weight: 300;
+        letter-spacing: -0.01em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .user-id {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-top: 1px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+    .profile-summary {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .profile-text {
+        text-align: right;
+        min-width: 0;
+    }
+
+    .email-label {
+        display: block;
+        font-size: 0.72rem;
+        font-weight: 400;
+        color: var(--text-muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 160px;
+    }
+
+    .badge-elite {
+        display: inline-block;
+        background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+        color: white;
+        font-size: 8.5px;
+        font-weight: 800;
+        padding: 0.18rem 0.55rem;
+        border-radius: 99px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-top: 3px;
+        white-space: nowrap;
+    }
+
+    .profile-orb {
+        width: 42px;
+        height: 42px;
+        min-width: 42px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+        border: 2px solid var(--border-medium);
+        box-shadow: 0 6px 14px -4px rgba(59, 130, 246, 0.3);
+    }
+
+    .main-scroll {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        min-height: 0;
+        padding: 2rem;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 1200px) {
+        :root {
+            --sidebar-width: 220px;
+        }
+    }
+
+    @media (max-width: 1024px) {
+        .dashboard-sidebar {
+            width: 64px;
+            min-width: 64px;
+        }
+        .brand-info,
+        .section-title,
+        .menu-item span,
+        .switch-text,
+        .badge-elite,
+        .email-label { display: none; }
+        .menu-item { justify-content: center; padding: 0.875rem; }
+        .theme-switch { justify-content: center; padding: 0.625rem; }
+        .sidebar-header { padding: 1.5rem 0.75rem; }
+        .brand-box { justify-content: center; }
+        .sidebar-menu { padding: 0 0.5rem; }
+        .sidebar-footer { padding: 1rem 0.5rem; }
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-root { flex-direction: column; }
+        .dashboard-sidebar {
+            width: 100%;
+            min-width: 100%;
+            height: auto;
+            border-right: none;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .sidebar-menu { display: none; }
+        .main-header { height: auto; padding: 1.25rem 1.5rem; }
+        .main-scroll { padding: 1.25rem; }
+        .profile-text { display: none; }
+    }
+</style>
+
 <script>
     import { payloadClient } from "../../../lib/payload-client";
 

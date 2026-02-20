@@ -1,0 +1,46 @@
+services:
+  # Backend Service (Payload CMS / Next.js)
+  - type: web
+    name: nest-backend
+    runtime: node
+    plan: free
+    rootDir: apps/backend
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: PAYLOAD_SECRET
+        generateValue: true
+      - key: NEXT_PUBLIC_SERVER_URL
+        fromService:
+          name: nest-backend
+          type: web
+          property: host
+      - key: NODE_ENV
+        value: production
+
+  # Frontend Service (Astro SSR)
+  - type: web
+    name: nest-frontend
+    runtime: node
+    plan: free
+    rootDir: apps/frontend
+    buildCommand: npm install && npm run build
+    startCommand: node ./dist/server/entry.mjs
+    envVars:
+      - key: PUBLIC_SUPABASE_URL
+        sync: false
+      - key: PUBLIC_SUPABASE_ANON_KEY
+        sync: false
+      - key: PUBLIC_PAYLOAD_URL
+        fromService:
+          name: nest-backend
+          type: web
+          property: host
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: PORT
+        value: 10000

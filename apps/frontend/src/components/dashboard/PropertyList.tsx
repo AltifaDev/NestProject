@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react';
-import { payloadClient } from '../../lib/payload-client';
+import { payloadClient, PAYLOAD_URL } from '../../lib/payload-client';
 import { Home, Plus, Edit2, Trash2, MapPin, Eye, TrendingUp, Clock, Filter, Search, BedDouble, Bath, Ruler } from 'lucide-react';
 
-export default function PropertyList() {
+interface PropertyListProps {
+    variant?: 'overview' | 'properties';
+}
+
+export default function PropertyList({ variant = 'overview' }: PropertyListProps) {
     const [properties, setProperties] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -84,45 +88,64 @@ export default function PropertyList() {
         },
     ];
 
+    const displayProperties = variant === 'overview' ? properties.slice(0, 4) : properties;
+
     return (
         <div className="pl-root">
-            {/* ── Stats Row ── */}
-            <div className="pl-stats-grid">
-                {stats.map((stat, i) => {
-                    const Icon = stat.icon;
-                    return (
-                        <div key={i} className="pl-stat-card" style={{ '--stat-accent': stat.accent, '--stat-bg': stat.accentBg, '--stat-glow': stat.accentGlow } as any}>
-                            <div className="pl-stat-header">
-                                <div className="pl-stat-icon">
-                                    <Icon size={17} />
+            {/* ── Stats Row (Only on Overview) ── */}
+            {variant === 'overview' && (
+                <div className="pl-stats-grid">
+                    {stats.map((stat, i) => {
+                        const Icon = stat.icon;
+                        return (
+                            <div key={i} className="pl-stat-card" style={{ '--stat-accent': stat.accent, '--stat-bg': stat.accentBg, '--stat-glow': stat.accentGlow } as any}>
+                                <div className="pl-stat-header">
+                                    <div className="pl-stat-icon">
+                                        <Icon size={17} />
+                                    </div>
+                                    <span className="pl-stat-sub">{stat.sub}</span>
                                 </div>
-                                <span className="pl-stat-sub">{stat.sub}</span>
+                                <div className="pl-stat-value">{stat.val}</div>
+                                <div className="pl-stat-label">{stat.label}</div>
                             </div>
-                            <div className="pl-stat-value">{stat.val}</div>
-                            <div className="pl-stat-label">{stat.label}</div>
-                        </div>
-                    );
-                })}
-            </div>
+                        );
+                    })}
+                </div>
+            )}
 
             {/* ── Section Header ── */}
             <div className="pl-section-header">
                 <div className="pl-section-title-block">
-                    <h2 className="pl-section-title">Property Portfolio</h2>
-                    <p className="pl-section-sub">Manage your property listings with Asia-Pacific's professional management system.</p>
+                    <h2 className="pl-section-title">
+                        {variant === 'overview' ? 'Recent Listings' : 'Property Portfolio'}
+                    </h2>
+                    <p className="pl-section-sub">
+                        {variant === 'overview'
+                            ? 'A quick glance at your latest property listings.'
+                            : 'Manage your property listings with Asia-Pacific\'s professional management system.'}
+                    </p>
                 </div>
                 <div className="pl-controls">
-                    <div className="pl-search-wrap">
-                        <Search size={14} className="pl-search-icon" />
-                        <input
-                            type="text"
-                            placeholder="Search by name / ID..."
-                            className="pl-search-input"
-                        />
-                    </div>
-                    <button className="pl-filter-btn" title="Filter">
-                        <Filter size={16} />
-                    </button>
+                    {variant === 'properties' && (
+                        <>
+                            <div className="pl-search-wrap">
+                                <Search size={14} className="pl-search-icon" />
+                                <input
+                                    type="text"
+                                    placeholder="Search by name / ID..."
+                                    className="pl-search-input"
+                                />
+                            </div>
+                            <button className="pl-filter-btn" title="Filter">
+                                <Filter size={16} />
+                            </button>
+                        </>
+                    )}
+                    {variant === 'overview' && properties.length > 4 && (
+                        <a href="/dashboard/properties" className="pl-add-btn" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-medium)', color: 'var(--text-main)', boxShadow: 'none' }}>
+                            <span>View All</span>
+                        </a>
+                    )}
                     <a href="/dashboard/new" className="pl-add-btn">
                         <Plus size={15} />
                         <span>Add New Listing</span>
@@ -130,91 +153,193 @@ export default function PropertyList() {
                 </div>
             </div>
 
-            {/* ── Properties Grid ── */}
-            <div className="pl-props-grid">
-                {properties.length === 0 ? (
-                    <div className="pl-empty">
-                        <div className="pl-empty-icon-wrap">
-                            <Home size={28} className="pl-empty-icon" />
-                        </div>
-                        <h3 className="pl-empty-title">No listings in your portfolio yet</h3>
-                        <p className="pl-empty-sub">
-                            Start creating your first property listing to present via the Nest of Assets system.
-                        </p>
-                        <a href="/dashboard/new" className="pl-empty-cta">Start Listing Now</a>
-                    </div>
-                ) : (
-                    properties.map((prop) => (
-                        <div key={prop.id} className="pl-prop-card">
-                            <div className="pl-prop-thumb">
-                                {prop.thumbnail ? (
-                                    <img
-                                        src={typeof prop.thumbnail === 'object' ? prop.thumbnail.url : prop.thumbnail}
-                                        alt={prop.title}
-                                        className="pl-prop-img"
-                                    />
-                                ) : (
-                                    <div className="pl-prop-placeholder">
-                                        <Home size={32} />
-                                    </div>
-                                )}
-                                <div className="pl-prop-badges">
-                                    <span className="pl-badge pl-badge-type">
-                                        {prop.listingType === 'sale' ? 'Sale' : 'Rent'}
-                                    </span>
-                                    <span className={`pl-badge ${prop.status === 'active' ? 'pl-badge-active' : 'pl-badge-pending'}`}>
-                                        {prop.status === 'active' ? 'Online' : 'Pending'}
-                                    </span>
-                                </div>
+            {/* ── Properties Display ── */}
+            {variant === 'overview' ? (
+                <div className="pl-props-grid">
+                    {displayProperties.length === 0 ? (
+                        <div className="pl-empty">
+                            <div className="pl-empty-icon-wrap">
+                                <Home size={28} className="pl-empty-icon" />
                             </div>
-                            <div className="pl-prop-body">
-                                <div className="pl-prop-meta">
-                                    <h3 className="pl-prop-title">{prop.title}</h3>
-                                    <span className="pl-prop-id">#{prop.id?.slice(-4)}</span>
+                            <h3 className="pl-empty-title">No listings in your portfolio yet</h3>
+                            <p className="pl-empty-sub">
+                                Start creating your first property listing to present via the Nest of Assets system.
+                            </p>
+                            <a href="/dashboard/new" className="pl-empty-cta">Start Listing Now</a>
+                        </div>
+                    ) : (
+                        displayProperties.map((prop) => (
+                            <div key={prop.id} className="pl-prop-card">
+                                <div className="pl-prop-thumb">
+                                    {prop.thumbnail ? (
+                                        <img
+                                            src={typeof prop.thumbnail === 'object' && prop.thumbnail.url
+                                                ? (prop.thumbnail.url.startsWith('http') ? prop.thumbnail.url : `${PAYLOAD_URL}${prop.thumbnail.url}`)
+                                                : (typeof prop.thumbnail === 'string' && prop.thumbnail.startsWith('http') ? prop.thumbnail : `${PAYLOAD_URL}${prop.thumbnail}`)}
+                                            alt={prop.title}
+                                            className="pl-prop-img"
+                                            onError={(e) => {
+                                                (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=600';
+                                            }}
+                                        />
+                                    ) : (
+                                        <div className="pl-prop-placeholder">
+                                            <Home size={32} />
+                                        </div>
+                                    )}
+                                    <div className="pl-prop-badges">
+                                        <span className="pl-badge pl-badge-type">
+                                            {prop.listingType === 'sale' ? 'Sale' : 'Rent'}
+                                        </span>
+                                        <span className={`pl-badge ${prop.status === 'active' ? 'pl-badge-active' : 'pl-badge-pending'}`}>
+                                            {prop.status === 'active' ? 'Online' : 'Pending'}
+                                        </span>
+                                    </div>
                                 </div>
-                                {prop.project_name && (
-                                    <p className="pl-prop-project">{prop.project_name}</p>
-                                )}
-                                <p className="pl-prop-addr">
-                                    <MapPin size={11} />
-                                    <span>{prop.address}</span>
-                                </p>
-                                <div className="pl-prop-specs">
-                                    {prop.stats?.bedrooms != null && (
-                                        <span className="pl-spec"><BedDouble size={12} /> {prop.stats.bedrooms}</span>
+                                <div className="pl-prop-body">
+                                    <div className="pl-prop-meta">
+                                        <h3 className="pl-prop-title">{prop.title}</h3>
+                                        <span className="pl-prop-id">#{String(prop.id).slice(-4)}</span>
+                                    </div>
+                                    {prop.project_name && (
+                                        <p className="pl-prop-project">{prop.project_name}</p>
                                     )}
-                                    {prop.stats?.bathrooms != null && (
-                                        <span className="pl-spec"><Bath size={12} /> {prop.stats.bathrooms}</span>
-                                    )}
-                                    {prop.stats?.livingArea != null && (
-                                        <span className="pl-spec"><Ruler size={12} /> {prop.stats.livingArea} sqm</span>
-                                    )}
-                                    {(prop.view_count != null && prop.view_count > 0) && (
-                                        <span className="pl-spec pl-spec-views"><Eye size={12} /> {prop.view_count.toLocaleString()}</span>
-                                    )}
-                                </div>
-                                <div className="pl-prop-footer">
-                                    <div>
-                                        <p className="pl-price-label">Investment</p>
-                                        <div className="pl-price">
-                                            <span>฿{prop.price?.toLocaleString()}</span>
-                                            {prop.listingType === 'rent' && <span className="pl-price-unit">/mo</span>}
+                                    <p className="pl-prop-addr">
+                                        <MapPin size={11} />
+                                        <span>{prop.address}</span>
+                                    </p>
+                                    <div className="pl-prop-specs">
+                                        {prop.stats?.bedrooms != null && (
+                                            <span className="pl-spec"><BedDouble size={12} /> {prop.stats.bedrooms}</span>
+                                        )}
+                                        {prop.stats?.bathrooms != null && (
+                                            <span className="pl-spec"><Bath size={12} /> {prop.stats.bathrooms}</span>
+                                        )}
+                                        {prop.stats?.livingArea != null && (
+                                            <span className="pl-spec"><Ruler size={12} /> {prop.stats.livingArea} sqm</span>
+                                        )}
+                                        {(prop.view_count != null && prop.view_count > 0) && (
+                                            <span className="pl-spec pl-spec-views"><Eye size={12} /> {prop.view_count.toLocaleString()}</span>
+                                        )}
+                                    </div>
+                                    <div className="pl-prop-footer">
+                                        <div>
+                                            <p className="pl-price-label">Investment</p>
+                                            <div className="pl-price">
+                                                <span>฿{prop.price?.toLocaleString()}</span>
+                                                {prop.listingType === 'rent' && <span className="pl-price-unit">/mo</span>}
+                                            </div>
+                                        </div>
+                                        <div className="pl-prop-actions">
+                                            <a href={`/dashboard/edit/${prop.id}`} className="pl-action-btn pl-edit-btn" title="Edit">
+                                                <Edit2 size={13} />
+                                            </a>
+                                            <button onClick={() => handleDelete(prop.id)} className="pl-action-btn pl-delete-btn" title="Delete">
+                                                <Trash2 size={13} />
+                                            </button>
                                         </div>
                                     </div>
-                                    <div className="pl-prop-actions">
-                                        <a href={`/dashboard/edit/${prop.id}`} className="pl-action-btn pl-edit-btn" title="Edit">
-                                            <Edit2 size={13} />
-                                        </a>
-                                        <button onClick={() => handleDelete(prop.id)} className="pl-action-btn pl-delete-btn" title="Delete">
-                                            <Trash2 size={13} />
-                                        </button>
-                                    </div>
                                 </div>
                             </div>
+                        ))
+                    )}
+                </div>
+            ) : (
+                <div className="pl-table-wrapper">
+                    {displayProperties.length === 0 ? (
+                        <div className="pl-empty">
+                            <div className="pl-empty-icon-wrap"><Home size={28} className="pl-empty-icon" /></div>
+                            <h3 className="pl-empty-title">No listings in your portfolio yet</h3>
+                            <p className="pl-empty-sub">Start creating your first property listing to present via the Nest of Assets system.</p>
+                            <a href="/dashboard/new" className="pl-empty-cta">Start Listing Now</a>
                         </div>
-                    ))
-                )}
-            </div>
+                    ) : (
+                        <table className="pl-table">
+                            <thead>
+                                <tr>
+                                    <th>Listing Details</th>
+                                    <th>Location</th>
+                                    <th>Status / Type</th>
+                                    <th>Specs</th>
+                                    <th>Price</th>
+                                    <th>Views</th>
+                                    <th style={{ textAlign: 'right' }}>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {displayProperties.map((prop) => (
+                                    <tr key={prop.id}>
+                                        <td>
+                                            <div className="plt-listing">
+                                                <div className="plt-thumb">
+                                                    {prop.thumbnail ? (
+                                                        <img
+                                                            src={typeof prop.thumbnail === 'object' && prop.thumbnail.url
+                                                                ? (prop.thumbnail.url.startsWith('http') ? prop.thumbnail.url : `${PAYLOAD_URL}${prop.thumbnail.url}`)
+                                                                : (typeof prop.thumbnail === 'string' && prop.thumbnail.startsWith('http') ? prop.thumbnail : `${PAYLOAD_URL}${prop.thumbnail}`)}
+                                                            alt={prop.title}
+                                                            onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=200'; }}
+                                                        />
+                                                    ) : (
+                                                        <div className="plt-placeholder"><Home size={20} /></div>
+                                                    )}
+                                                </div>
+                                                <div className="plt-info">
+                                                    <div className="plt-title" title={prop.title}>{prop.title}</div>
+                                                    <div className="plt-id">#{String(prop.id).slice(-4)}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className="plt-loc" title={prop.address}>
+                                                <MapPin size={11} /><span>{prop.address || '-'}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className="plt-status-col">
+                                                <span className={`pl-badge ${prop.status === 'active' ? 'pl-badge-active' : 'pl-badge-pending'}`}>
+                                                    {prop.status === 'active' ? 'Online' : 'Pending'}
+                                                </span>
+                                                <span className="pl-badge pl-badge-type">
+                                                    {prop.listingType === 'sale' ? 'Sale' : 'Rent'}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className="plt-specs">
+                                                <span><BedDouble size={12} /> {prop.stats?.bedrooms || '-'}</span>
+                                                <span><Bath size={12} /> {prop.stats?.bathrooms || '-'}</span>
+                                                <span><Ruler size={12} /> {prop.stats?.livingArea || '-'}m²</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className="plt-price">
+                                                ฿{prop.price?.toLocaleString() || '-'}
+                                                {prop.listingType === 'rent' && <span className="plt-price-unit">/mo</span>}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className="plt-views">
+                                                <Eye size={12} /> {prop.view_count?.toLocaleString() || 0}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className="plt-actions" style={{ justifyContent: 'flex-end' }}>
+                                                <a href={`/dashboard/edit/${prop.id}`} className="pl-action-btn pl-edit-btn" title="Edit">
+                                                    <Edit2 size={13} />
+                                                </a>
+                                                <button onClick={() => handleDelete(prop.id)} className="pl-action-btn pl-delete-btn" title="Delete">
+                                                    <Trash2 size={13} />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
+                </div>
+            )}
 
             <style>{`
                 /* ─── Root ─── */
@@ -787,6 +912,180 @@ export default function PropertyList() {
                     background: rgba(239,68,68,0.12);
                     border-color: rgba(239,68,68,0.25);
                     color: #f87171;
+                }
+
+                /* ─── Table Layout ─── */
+                .pl-table-wrapper {
+                    width: 100%;
+                    overflow-x: auto;
+                    background: var(--bg-card, rgba(255,255,255,0.02));
+                    border: 1px solid var(--border-subtle, rgba(255,255,255,0.06));
+                    border-radius: 14px;
+                    /* Customize scrollbar */
+                    scrollbar-width: thin;
+                    scrollbar-color: var(--border-medium) transparent;
+                }
+                .pl-table-wrapper::-webkit-scrollbar {
+                    height: 8px;
+                }
+                .pl-table-wrapper::-webkit-scrollbar-thumb {
+                    background-color: var(--border-medium);
+                    border-radius: 4px;
+                }
+
+                .pl-table {
+                    width: 100%;
+                    min-width: 900px;
+                    border-collapse: collapse;
+                    text-align: left;
+                }
+
+                .pl-table th {
+                    padding: 1rem 1.25rem;
+                    font-size: 0.725rem;
+                    font-weight: 700;
+                    color: var(--text-muted, rgba(255,255,255,0.4));
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                    border-bottom: 1px solid var(--border-subtle, rgba(255,255,255,0.06));
+                }
+
+                .pl-table td {
+                    padding: 1rem 1.25rem;
+                    border-bottom: 1px solid var(--border-subtle, rgba(255,255,255,0.06));
+                    vertical-align: middle;
+                }
+
+                .pl-table tbody tr:last-child td {
+                    border-bottom: none;
+                }
+
+                .pl-table tbody tr {
+                    transition: background 0.2s ease;
+                }
+
+                .pl-table tbody tr:hover {
+                    background: var(--bg-glass, rgba(255,255,255,0.02));
+                }
+                
+                .plt-listing {
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                }
+                
+                .plt-thumb {
+                    width: 48px;
+                    height: 48px;
+                    border-radius: 8px;
+                    overflow: hidden;
+                    background: var(--bg-glass);
+                    flex-shrink: 0;
+                    border: 1px solid var(--border-subtle);
+                }
+                
+                .plt-thumb img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+
+                .plt-placeholder {
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: var(--text-muted);
+                }
+
+                .plt-info {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.2rem;
+                    max-width: 250px;
+                }
+
+                .plt-title {
+                    font-size: 0.85rem;
+                    font-weight: 500;
+                    color: var(--text-main);
+                    display: -webkit-box;
+                    -webkit-line-clamp: 1;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                }
+
+                .plt-id {
+                    font-size: 0.65rem;
+                    font-family: monospace;
+                    color: var(--text-dim);
+                }
+
+                .plt-loc {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.4rem;
+                    font-size: 0.75rem;
+                    color: var(--text-muted);
+                }
+                .plt-loc svg {
+                    color: var(--accent-primary);
+                }
+                .plt-loc span {
+                    max-width: 150px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+
+                .plt-status-col {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 0.4rem;
+                }
+
+                .plt-specs {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.6rem;
+                    font-size: 0.75rem;
+                    color: var(--text-muted);
+                }
+                .plt-specs span {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.25rem;
+                }
+                .plt-specs svg {
+                    color: var(--text-dim);
+                }
+
+                .plt-price {
+                    font-size: 0.875rem;
+                    font-weight: 500;
+                    color: var(--text-main);
+                }
+                .plt-price-unit {
+                    font-size: 0.7rem;
+                    color: var(--text-dim);
+                    font-weight: 400;
+                    margin-left: 2px;
+                }
+
+                .plt-views {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.3rem;
+                    font-size: 0.75rem;
+                    color: var(--accent-secondary);
+                    font-weight: 500;
+                }
+
+                .plt-actions {
+                    display: flex;
+                    gap: 0.4rem;
                 }
 
                 /* ─── Responsive ─── */

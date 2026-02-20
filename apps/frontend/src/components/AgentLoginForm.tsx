@@ -14,7 +14,15 @@ export default function AgentLoginForm() {
         setError(null);
 
         try {
-            await payloadClient.login(email, password);
+            const data: any = await payloadClient.login(email, password);
+
+            // Check if the user has the 'agent' role
+            if (data.user && data.user.role !== 'agent') {
+                setError('Access denied. This portal is for agents only.');
+                payloadClient.logout(); // Clear the session
+                return;
+            }
+
             window.location.href = '/dashboard';
         } catch (err: any) {
             setError(err.message || 'Login failed. Please check your credentials.');

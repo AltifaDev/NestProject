@@ -1,10 +1,10 @@
 ---
 import DashboardLayout from "../../layouts/DashboardLayout.astro";
-import OverviewDashboard from "../../components/dashboard/OverviewDashboard.tsx";
+import AgentProfileForm from "../../components/dashboard/AgentProfileForm.tsx";
 import NotificationBell from "../../components/dashboard/NotificationBell.tsx";
 ---
 
-<DashboardLayout title="แผงควบคุมเอเจ้น | NEST Elite Dashboard">
+<DashboardLayout title="Agent Profile | NEST Elite Dashboard">
     <div class="dashboard-root">
         <!-- Sidebar Navigation -->
         <aside class="dashboard-sidebar">
@@ -21,7 +21,7 @@ import NotificationBell from "../../components/dashboard/NotificationBell.tsx";
             <nav class="sidebar-menu">
                 <div class="menu-section">
                     <span class="section-title">CORE</span>
-                    <a href="/dashboard" class="menu-item active">
+                    <a href="/dashboard" class="menu-item">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="item-icon"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
                         <span>Overview</span>
                     </a>
@@ -29,9 +29,9 @@ import NotificationBell from "../../components/dashboard/NotificationBell.tsx";
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="item-icon"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                         <span>Properties</span>
                     </a>
-                    <a href="/dashboard/profile" class="menu-item">
+                    <a href="/dashboard/profile" class="menu-item active">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="item-icon"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                        <span>Profile</span>
+                        <span>Profile Management</span>
                     </a>
                 </div>
 
@@ -80,11 +80,15 @@ import NotificationBell from "../../components/dashboard/NotificationBell.tsx";
         <main class="dashboard-main">
             <header class="main-header">
                 <div class="greeting-box">
-                    <h1 class="welcome-text">Welcome Back</h1>
-                    <p id="user-display" class="user-id">Hello, Agent ✨</p>
+                    <h1 class="welcome-text">Settings & Profile</h1>
+                    <p id="user-display" class="user-id">Manage your account ✨</p>
                 </div>
                 <div class="header-actions">
                     <NotificationBell client:load />
+                    <a href="/agent/login" class="add-property-btn" style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-subtle);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></svg>
+                        <span>Agent Login Page</span>
+                    </a>
                     <div class="profile-summary">
                         <div class="profile-text">
                             <span id="user-email-full" class="email-label"></span>
@@ -97,7 +101,7 @@ import NotificationBell from "../../components/dashboard/NotificationBell.tsx";
 
             <div class="main-scroll">
                 <div class="content-wrapper">
-                    <OverviewDashboard client:load />
+                    <AgentProfileForm client:load />
                 </div>
             </div>
         </main>
@@ -116,15 +120,11 @@ import NotificationBell from "../../components/dashboard/NotificationBell.tsx";
         localStorage.setItem('theme', newTheme);
     });
 
+    // User Info Display
     const user = payloadClient.getUser();
     if (user) {
-        const display = document.getElementById('user-display');
         const displayFull = document.getElementById('user-email-full');
-        const hour = new Date().getHours();
-        const greet = hour < 12 ? 'Good Morning' : hour < 18 ? 'Good Afternoon' : 'Good Evening';
-        
-        if (display) display.textContent = `${greet}, ${user.email.split('@')[0]} 👋`;
-        if (displayFull) displayFull.textContent = user.email;
+        if (displayFull && user.email) displayFull.textContent = user.email;
     }
 
     // Logout
@@ -355,7 +355,7 @@ import NotificationBell from "../../components/dashboard/NotificationBell.tsx";
        ============================================================ */
     .dashboard-main {
         flex: 1;
-        min-width: 0; /* Critical: prevents flex child from overflowing */
+        min-width: 0;
         display: flex;
         flex-direction: column;
         overflow: hidden;
@@ -401,6 +401,24 @@ import NotificationBell from "../../components/dashboard/NotificationBell.tsx";
         display: flex;
         align-items: center;
         flex-shrink: 0;
+        gap: 1rem;
+    }
+
+    .add-property-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 99px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .add-property-btn:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
     }
 
     .profile-summary {
@@ -459,6 +477,8 @@ import NotificationBell from "../../components/dashboard/NotificationBell.tsx";
     .content-wrapper {
         padding: 2rem;
         max-width: 100%;
+        display: flex;
+        justify-content: center;
     }
 
     /* ============================================================
@@ -481,6 +501,8 @@ import NotificationBell from "../../components/dashboard/NotificationBell.tsx";
         .switch-text,
         .badge-elite,
         .email-label { display: none; }
+        .add-property-btn span { display: none; }
+        .add-property-btn { padding: 0.5rem; }
         .menu-item { justify-content: center; padding: 0.875rem; }
         .theme-switch { justify-content: center; padding: 0.625rem; }
         .sidebar-header { padding: 1.5rem 0.75rem; }
@@ -499,7 +521,7 @@ import NotificationBell from "../../components/dashboard/NotificationBell.tsx";
             border-bottom: 1px solid var(--border-subtle);
         }
         .sidebar-menu { display: none; }
-        .main-header { height: auto; padding: 1.25rem 1.5rem; }
+        .main-header { height: auto; padding: 1.25rem 1.5rem; flex-wrap: wrap;}
         .content-wrapper { padding: 1.25rem; }
     }
 </style>

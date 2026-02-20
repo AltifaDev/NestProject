@@ -78,52 +78,62 @@ const {
 			// Animation Logic
 			const initAnimations = () => {
 				// Hero Entrance
-				const heroTl = gsap.timeline({
-					defaults: { ease: 'power3.out', duration: 1 }
-				});
+				const heroBadge = document.querySelector('.hero-badge');
+				if (heroBadge) {
+					const heroTl = gsap.timeline({
+						defaults: { ease: 'power3.out', duration: 1 }
+					});
 
-				heroTl
-					.from('.hero-badge', { y: 30, opacity: 0 })
-					.from('.hero-title', { y: 40, opacity: 0 }, '-=0.7')
-					.from('.hero-subtitle', { y: 40, opacity: 0 }, '-=0.7')
-					.from('.hero-actions', { y: 40, opacity: 0 }, '-=0.7')
-					.from('.hero-footer-text', { y: 20, opacity: 0 }, '-=0.7')
-					.from('.hero-dashboard-container', { 
-						opacity: 0, 
-						y: 100, 
-						duration: 1.5,
-						ease: 'power4.out' 
-					}, '-=1');
+					heroTl
+						.from('.hero-badge', { y: 30, opacity: 0 })
+						.from('.hero-title', { y: 40, opacity: 0 }, '-=0.7')
+						.from('.hero-subtitle', { y: 40, opacity: 0 }, '-=0.7')
+						.from('.hero-actions', { y: 40, opacity: 0 }, '-=0.7')
+						.from('.hero-footer-text', { y: 20, opacity: 0 }, '-=0.7')
+						.from('.hero-dashboard-container', { 
+							opacity: 0, 
+							y: 100, 
+							duration: 1.5,
+							ease: 'power4.out' 
+						}, '-=1');
+				}
 
 				// Scroll Reveal via batch
-				ScrollTrigger.batch('.gsap-reveal', {
-					onEnter: (batch) => {
-						gsap.to(batch, {
-							opacity: 1,
-							y: 0,
-							stagger: 0.1,
-							duration: 1.2,
-							ease: 'power3.out',
-							overwrite: true
-						});
-					},
-					start: 'top 85%',
-				});
+				if (document.querySelector('.gsap-reveal')) {
+					ScrollTrigger.batch('.gsap-reveal', {
+						onEnter: (batch) => {
+							gsap.to(batch, {
+								opacity: 1,
+								y: 0,
+								stagger: 0.1,
+								duration: 1.2,
+								ease: 'power3.out',
+								overwrite: true
+							});
+						},
+						start: 'top 85%',
+					});
+				}
 
 				// Chart Animation
 				const barTriggers = gsap.utils.toArray('.chart-bars');
-				barTriggers.forEach((chart: any) => {
-					gsap.from(chart.querySelectorAll('.bar'), {
-						scrollTrigger: {
-							trigger: chart,
-							start: 'top 80%'
-						},
-						height: 0,
-						stagger: 0.05,
-						duration: 1,
-						ease: 'power2.out'
+				if (barTriggers.length > 0) {
+					barTriggers.forEach((chart: any) => {
+						const bars = chart.querySelectorAll('.bar');
+						if (bars.length > 0) {
+							gsap.from(bars, {
+								scrollTrigger: {
+									trigger: chart,
+									start: 'top 80%'
+								},
+								height: 0,
+								stagger: 0.05,
+								duration: 1,
+								ease: 'power2.out'
+							});
+						}
 					});
-				});
+				}
 
 				ScrollTrigger.refresh();
 			};

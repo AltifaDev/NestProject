@@ -41,6 +41,11 @@ export default function SearchResultsModal({
   const markersRef = useRef<any[]>([]);
   const [isMapReady, setIsMapReady] = useState(false);
 
+  const searchResultsRef = useRef(searchResults);
+  useEffect(() => {
+    searchResultsRef.current = searchResults;
+  }, [searchResults]);
+
   // Safe property extraction with null checks
   const properties = searchResults?.features?.map(f => f.properties) || [];
   const hasResults = properties.length > 0;
@@ -69,7 +74,7 @@ export default function SearchResultsModal({
 
   // Initialize map
   useEffect(() => {
-    if (!isMapReady || !mapContainerRef.current || mapRef.current || !isOpen) return;
+    if (!isMapReady || !mapContainerRef.current || mapRef.current) return;
 
     const L = (window as any).L;
     if (!L) return;
@@ -105,7 +110,7 @@ export default function SearchResultsModal({
         preview.onclick = () => {
           const propertyId = preview.getAttribute('data-id');
           // Find property by id in the features
-          const feature = searchResults?.features.find(f => f.properties.id === propertyId);
+          const feature = searchResultsRef.current?.features.find(f => f.properties.id === propertyId);
           if (feature) {
             console.log('🏢 Opening detail from popup click:', feature.properties.title);
             setSelectedProperty(feature.properties);
@@ -121,7 +126,7 @@ export default function SearchResultsModal({
         mapRef.current = null;
       }
     };
-  }, [isMapReady, isOpen, searchResults]);
+  }, [isMapReady]);
 
   // Update markers
   useEffect(() => {
@@ -142,12 +147,6 @@ export default function SearchResultsModal({
 
     const features = searchResults.features;
     console.log('📍 Adding', features.length, 'markers to map');
-
-    // Fit bounds to show all markers
-    const bounds = L.latLngBounds(
-      features.map((f: any) => [f.geometry.coordinates[1], f.geometry.coordinates[0]])
-    );
-    mapRef.current.fitBounds(bounds, { padding: [50, 50] });
 
     // Add custom price markers
     features.forEach((feature: any) => {
@@ -196,6 +195,14 @@ export default function SearchResultsModal({
       marker.addTo(mapRef.current);
       markersRef.current.push(marker);
     });
+
+    // Fit bounds only if container is visible to avoid Leaflet error on 0x0 map
+    if (mapContainerRef.current && mapContainerRef.current.clientWidth > 0) {
+      const bounds = L.latLngBounds(
+        features.map((f: any) => [f.geometry.coordinates[1], f.geometry.coordinates[0]])
+      );
+      mapRef.current.fitBounds(bounds, { padding: [50, 50] });
+    }
   }, [searchResults, isMapReady]);
 
   // Open/Close animations
@@ -207,7 +214,20 @@ export default function SearchResultsModal({
       gsap.set(panel, { display: 'flex', visibility: 'visible', pointerEvents: 'auto' });
       gsap.fromTo(panel, { y: '100%' }, {
         y: '0%', duration: 0.6, ease: 'power3.out',
-        onComplete: () => mapRef.current?.invalidateSize()
+        onComplete: () => {
+          if (!mapRef.current) return;
+          mapRef.current.invalidateSize();
+
+          // Refit bounds now that map is visible
+          const L = (window as any).L;
+          const features = searchResultsRef.current?.features;
+          if (L && features && features.length > 0) {
+            const bounds = L.latLngBounds(
+              features.map((f: any) => [f.geometry.coordinates[1], f.geometry.coordinates[0]])
+            );
+            mapRef.current.fitBounds(bounds, { padding: [50, 50] });
+          }
+        }
       });
     } else {
       const panel = contentRef.current;
@@ -384,9 +404,12 @@ export default function SearchResultsModal({
                             <input type="checkbox" />
                             <span>Share & Compare</span>
                           </label>
-                          <div className="agent-logo">
-                            {/* Placeholder for agency logo */}
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2"><path d="M3 21h18" /><path d="M5 21V7l8-4 8 4v14" /><path d="M9 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4" /></svg>
+                          <div className="agent-logo" title={property.agent?.name || 'Nest Team'}>
+                            {property.agent?.image_url ? (
+                              <img src={property.agent.image_url} alt={property.agent.name} className="w-full h-full object-cover rounded-full" />
+                            ) : (
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2"><path d="M3 21h18" /><path d="M5 21V7l8-4 8 4v14" /><path d="M9 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4" /></svg>
+                            )}
                           </div>
                         </div>
                       </div>
