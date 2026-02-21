@@ -1,0 +1,67 @@
+{
+	"version": 3,
+	"routes": [
+		{
+			"handle": "filesystem"
+		},
+		{
+			"src": "^/_astro/(.*)$",
+			"headers": {
+				"cache-control": "public, max-age=31536000, immutable"
+			},
+			"continue": true
+		},
+		{
+			"src": "^/_server-islands/([^/]+?)/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/_image/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/agent/login/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/app/dashboard/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/dashboard/edit/([^/]+?)/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/dashboard/leads/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/dashboard/new/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/dashboard/performance/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/dashboard/profile/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/dashboard/properties/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/dashboard/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/login/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/$",
+			"dest": "_render"
+		}
+	]
+}
